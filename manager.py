@@ -153,20 +153,6 @@ def xepgiangvien(sche):
 
 
 # Xếp lớp ghép
-def lopghep1(sche):
-    for i in range(len(sche)):
-        if sche[i]._lopghep == None:
-            for j in range(len(sche)):
-                if sche[j]._lopghep == None:
-                    # Cùng mã học phần, cùng thứ, cùng tiết
-                    if(sche[i]._course_code == sche[j]._course_code and 
-                    sche[i]._day == sche[j]._day and 
-                    sche[i]._session == sche[j]._session and 
-                    i != j):
-                        sche[i]._lopghep = sche[j]._stt
-                        sche[j]._lopghep = sche[i]._stt
-                        break
-
 def lopghep(sche):
     for i in sche:
         if i._lopghep == None:
@@ -323,7 +309,7 @@ def list_save(sche):
 
 list_ = readfile('tkb.xlsx')
 
-
+# lopghep(list_)
 # xepgiangvien(list_)
 # checktrung(list_)
 
