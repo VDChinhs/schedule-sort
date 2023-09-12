@@ -16,3 +16,4 @@ class monhoc:
         self._lopghep = None
         self._trung = None
         self._tuantrung = []
+        self._2lich = 1
