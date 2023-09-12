@@ -22,23 +22,20 @@ def rowheading(excel):
             val = excel.cell(row = i, column = j).value # type: ignore
             if val == "STT":
                 return i
-
-def xeplopghep(sche,lich,somon,listlec,index):
+            
+# Tìm lớp theo stt
+def timlop(sche,stt):
     for i in sche:
-        if lich._lopghep == i._stt and i._lec == None:
-            i._lec = listlec[index]
-            somon = somon + 1
+        if i._stt == stt:
+            return i
 
-def xeplop2lich(sche,lich,somon,listlec,index):
+# Lấy số môn dạy của giảng viên ở môn đó
+def somonday(sche,gv,tenmon):
+    count = 0
     for i in sche:
-        if lich._course_name == i._course_name and lich._class_name == i._class_name and i._lec == None:
-            i._lec = listlec[index]
-            somon = somon + 1
-
-def chuyengv(somon,maxx,index):
-    if somon >= maxx:
-        index = index + 1
-        somon = 0
+        if i._course_name == tenmon and i._lec == gv:
+            count = count + 1
+    return count
 
 # Xếp giảng viên
 def xepgiangvien(sche):
@@ -93,39 +90,40 @@ def xepgiangvien(sche):
 
                 if len(listalpha[tenmon]) == 2:
                     # Tính tổng số môn mà gv được dạy
-                    if index == 0:
-                        maxx = math.ceil(countmon(tenmon,sche)/2) + (int(listpoint[index]) - 5)
-                    else:
-                        maxx = math.floor(countmon(tenmon,sche)/2) + (int(listpoint[index]) - 5)
+                    # if index == 0:
+                    #     maxx = math.ceil(countmon(tenmon,sche)/2) + (int(listpoint[index]) - 5)
+                    # else:
+                    maxx = math.floor(countmon(tenmon,sche)/2) + (int(listpoint[index]) - 5)
                     if maxx < 0:
                         maxx = 1
 
                     # Xét nếu mà có giảng viên ở lịch đó rồi không xếp nữa     
                     if lich._lec == None:
-                        lich._lec = listlec[index]
-                        somon = somon + 1
-                        # Xếp gv cho lớp ghép
-                        for i in sche:
-                            if lich._lopghep == i._stt and i._lec == None:
-                                i._lec = listlec[index]
-                                somon = somon + 1
-                                # Xếp gv cho lớp có 2 lịch
-                                for j in sche:
-                                        if j._course_name == i._course_name and j._class_name == i._class_name and j._lec == None:
-                                            j._lec = listlec[index]
-                                            somon = somon + 1
-                            
-                        # Xếp gv cho lớp có 2 lịch dạy
-                        for i in sche:
-                            if lich._course_name == i._course_name and lich._class_name == i._class_name and i._lec == None:
-                                i._lec = listlec[index]
-                                somon = somon + 1
-                            
-                        # Xếp gv cho những môn đồ án
-                        for i in sche:
-                            # Nếu có tên môn lại thêm chữ đồ án
-                            if i._course_name.strip().lower().count(lich._course_name.strip().lower()) > 0 and i._course_name.strip().lower().count("đồ án") != 0 and i._class_name == lich._class_name and i._lec == None:
-                                i._lec = listlec[index]
+                        if index < len(listlec):
+                            lich._lec = listlec[index]
+                            somon = somon + 1
+                            # Xếp gv cho lớp ghép
+                            for i in sche:
+                                if lich._lopghep == i._stt and i._lec == None:
+                                    i._lec = listlec[index]
+                                    somon = somon + 1
+                                    # Xếp gv cho lớp có 2 lịch
+                                    for j in sche:
+                                            if j._course_name == i._course_name and j._class_name == i._class_name and j._lec == None:
+                                                j._lec = listlec[index]
+                                                somon = somon + 1
+                                
+                            # Xếp gv cho lớp có 2 lịch dạy
+                            for i in sche:
+                                if lich._course_name == i._course_name and lich._class_name == i._class_name and i._lec == None:
+                                    i._lec = listlec[index]
+                                    somon = somon + 1
+                                
+                            # Xếp gv cho những môn đồ án
+                            for i in sche:
+                                # Nếu có tên môn lại thêm chữ đồ án
+                                if i._course_name.strip().lower().count(lich._course_name.strip().lower()) > 0 and i._course_name.strip().lower().count("đồ án") != 0 and i._class_name == lich._class_name and i._lec == None:
+                                    i._lec = listlec[index]
 
                     # Số môn gv dạy quá maxx thì chuyển xếp gv khác  
                     if somon >= maxx:
@@ -153,7 +151,7 @@ def xepgiangvien(sche):
 
 
 # Xếp lớp ghép
-def lopghep(sche):
+def checklopghep(sche):
     for i in sche:
         if i._lopghep == None:
             for j in sche:
@@ -198,6 +196,22 @@ def checktrung(sche):
                             cong = True
         if cong:            
             index = index + 1
+
+# Tìm những lớp có 2 lịch ở 1 môn
+def check2lich(sche):
+    for i in sche:
+        count = 1
+        ds = []
+        if i._2lich == 1:
+            for j in sche:
+                if i._course_code == j._course_code and i._class_name == j._class_name and j._2lich == 1 and i != j:
+                    print(i._class_name)
+                    count = count + 1
+                    ds.append(j)
+                    i._2lich = count
+            if len(ds) != 0:
+                for i in ds:
+                    i._2lich = count
 
 # Tìm ngày bắt đầu năm học
 def startday(sche):
@@ -307,7 +321,7 @@ def list_save(sche):
         ds.append(x)
     return ds
 
-list_ = readfile('tkb.xlsx')
+# list_ = readfile('tkb.xlsx')
 
 # lopghep(list_)
 # xepgiangvien(list_)
