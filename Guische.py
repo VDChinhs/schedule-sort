@@ -104,8 +104,9 @@ class Guische:
             for i in self.list_:
                 self.list_copy.append(i)
 
-            mn.lopghep(self.list_)
-            self.load_data(self.list_)
+            mn.checklopghep(self.list_)
+            mn.check2lich(self.list_)
+            self.load_data(self.list_)``
             self.cansave = True
         else:
             print("Không có thư mục nào được chọn.")
@@ -147,12 +148,13 @@ class Guische:
     def xepgiangvien(self):
         try:
             self.treeview.delete(*self.treeview.get_children())
-            list_xep = mn.readfile(self.file_path)
+            self.list_xep = mn.readfile(self.file_path)
             self.checktrung = True
-            mn.lopghep(list_xep)
-            mn.xepgiangvien(list_xep)
-            self.load_data(list_xep)
-            self.list_ = list_xep
+            mn.checklopghep(self.list_xep)
+            mn.check2lich(self.list_xep)
+            mn.xepgiangvien(self.list_xep)
+            self.load_data(self.list_xep)
+            self.list_ = self.list_xep
         except:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
             return
