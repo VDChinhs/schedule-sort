@@ -183,8 +183,8 @@ class Guigiangvien:
             listpoint = list(listalpha[tenmon].values())
             for i in listpoint:
                 tong = tong + int(i)
-            if tong != 10:
-                messagebox.showwarning(title = "Chú ý",message = tenmon + ": tổng hệ số alpha chưa = 10")
+            if tong != 12:
+                messagebox.showwarning(title = "Chú ý",message = tenmon + ": tổng hệ số alpha chưa = 12")
                 break
 
     def getname():

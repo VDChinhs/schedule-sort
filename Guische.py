@@ -35,14 +35,17 @@ class Guische:
         self.button1 = ttk.Button(self.widgets_frame, text="Sửa", command=self.sua)
         self.button1.grid(row=3, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên", command=self.xepgiangvien)
+        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên(Full)", command=self.xepgiangvien)
         self.button1.grid(row=4, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Kiểm tra lớp trùng", command=self.checkloptrung)
+        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên(Alpha)", command=self.xepgiangvien1)
         self.button1.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Xuất File Excel", command=self.save)
+        self.button1 = ttk.Button(self.widgets_frame, text="Kiểm tra lớp trùng", command=self.checkloptrung)
         self.button1.grid(row=6, column=0, padx=5, pady=5, sticky="nsew")
+
+        self.button1 = ttk.Button(self.widgets_frame, text="Xuất File Excel", command=self.save)
+        self.button1.grid(row=7, column=0, padx=5, pady=5, sticky="nsew")
 
         self.treeFrame = ttk.Frame(self.frame)
         self.treeFrame.grid(row=0, column=1, pady=10)
@@ -106,7 +109,7 @@ class Guische:
 
             mn.checklopghep(self.list_)
             mn.check2lich(self.list_)
-            self.load_data(self.list_)``
+            self.load_data(self.list_)
             self.cansave = True
         else:
             print("Không có thư mục nào được chọn.")
@@ -145,6 +148,7 @@ class Guische:
             workbook.save(file_path)
             workbook.close()
 
+    # Xếp giảng viên ưu tiên xếp hết
     def xepgiangvien(self):
         try:
             self.treeview.delete(*self.treeview.get_children())
@@ -153,6 +157,22 @@ class Guische:
             mn.checklopghep(self.list_xep)
             mn.check2lich(self.list_xep)
             mn.xepgiangvien(self.list_xep)
+            self.load_data(self.list_xep)
+            self.list_ = self.list_xep
+        except:
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
+            return
+        messagebox.showinfo(title="Thông báo",message="Xếp giảng viên xong")
+
+    # Xếp giảng viên ưu tiên xếp theo alpha
+    def xepgiangvien1(self):
+        try:
+            self.treeview.delete(*self.treeview.get_children())
+            self.list_xep = mn.readfile(self.file_path)
+            self.checktrung = True
+            mn.checklopghep(self.list_xep)
+            mn.check2lich(self.list_xep)
+            mn.xepgiangvien1(self.list_xep)
             self.load_data(self.list_xep)
             self.list_ = self.list_xep
         except:
@@ -197,6 +217,7 @@ class Guische:
                 # Lưu workbook
                 workbook.save(file_path)
                 workbook.close()
+                messagebox.showinfo(title="Thông báo",message="Lưu File thành công")
         else:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
     

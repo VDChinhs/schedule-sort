@@ -33,11 +33,11 @@ def timlop(sche,stt):
 def somonday(sche,gv,tenmon):
     count = 0
     for i in sche:
-        if i._course_name == tenmon and i._lec == gv:
+        if i._course_name.strip().lower() == tenmon.strip().lower() and i._lec == gv:
             count = count + 1
     return count
 
-# Xếp giảng viên
+# Xếp giảng viên (ưu tiên xếp hết)
 def xepgiangvien(sche):
     listalpha = ra.listalpha()
     
@@ -51,10 +51,10 @@ def xepgiangvien(sche):
             if tenmon.lower().strip() == lich._course_name.lower().strip() and lich._lec == None and lich._course_name.strip().lower().count("đồ án") == 0:
                 if len(listalpha[tenmon]) == 3:
                     # Tính tổng số môn mà gv được dạy
-                    if index == listpoint.index(max(listpoint)):
-                        maxx = math.floor(countmon(tenmon,sche)/3) + (countmon(tenmon,sche) % 3) + (int(listpoint[index]) - 3)
+                    if index == 0:
+                        maxx = math.floor(countmon(tenmon,sche)/3) + (countmon(tenmon,sche) % 3) + (int(listpoint[index]) - 4)
                     else:
-                        maxx = math.floor(countmon(tenmon,sche)/3) + (int(listpoint[index]) - 3)
+                        maxx = math.floor(countmon(tenmon,sche)/3) + (int(listpoint[index]) - 4)
 
                     # Xét nếu mà có giảng viên ở lịch đó rồi không xếp nữa 
                     if lich._lec == None:
@@ -90,10 +90,10 @@ def xepgiangvien(sche):
 
                 if len(listalpha[tenmon]) == 2:
                     # Tính tổng số môn mà gv được dạy
-                    # if index == 0:
-                    #     maxx = math.ceil(countmon(tenmon,sche)/2) + (int(listpoint[index]) - 5)
-                    # else:
-                    maxx = math.floor(countmon(tenmon,sche)/2) + (int(listpoint[index]) - 5)
+                    if index == 0:
+                        maxx = math.ceil(countmon(tenmon,sche)/2) + (int(listpoint[index]) - 6)
+                    else:
+                        maxx = math.floor(countmon(tenmon,sche)/2) + (int(listpoint[index]) - 6)
                     if maxx < 0:
                         maxx = 1
 
@@ -149,6 +149,114 @@ def xepgiangvien(sche):
     #             print(tenmon,lich._lec)
     #     print("____")
 
+# Xếp giảng viên (ưu tiên xếp theo alpha)
+def xepgiangvien1(sche):
+    listalpha = ra.listalpha()
+    
+    for tenmon in listalpha:
+        listlec = list(listalpha[tenmon].keys())
+        listpoint = list(listalpha[tenmon].values())
+
+        for lich in sche:
+            if tenmon.lower().strip() == lich._course_name.lower().strip() and lich._lec == None and lich._course_name.strip().lower().count("đồ án") == 0:
+                if len(listalpha[tenmon]) == 3:
+
+                    for vitri in range(len(listlec)):
+                        # Tính tổng số môn mà gv được dạy
+                        maxx = math.floor(countmon(tenmon,sche)/3) + (int(listpoint[vitri]) - 4)
+                        if maxx <= 0:
+                            maxx = 1
+
+                        # Dự báo số môn sau khi xếp lịch xem có quá tổng số môn được dạy không thì mới xếp
+                        dubao =  lich._2lich
+                        if lich._lopghep != None:
+                            dubao = dubao + timlop(sche,lich._lopghep)._2lich
+
+                        if dubao + somonday(sche,listlec[vitri],tenmon) <= maxx:
+                            # Xét nếu mà có giảng viên ở lịch đó rồi không xếp nữa 
+                            if lich._lec == None:
+                                lich._lec = listlec[vitri]                              
+
+                                # Xếp gv cho lớp ghép
+                                for i in sche:
+                                    if lich._lopghep == i._stt and i._lec == None:
+                                        i._lec = listlec[vitri]
+                                        
+                                        # Xếp gv cho lớp có 2 lịch
+                                        for j in sche:
+                                            if j._course_name == i._course_name and j._class_name == i._class_name and j._lec == None:
+                                                j._lec = listlec[vitri]
+                                                
+                                # Xếp gv cho lớp có 2 lịch dạy
+                                for i in sche:
+                                    if lich._course_name == i._course_name and lich._class_name == i._class_name and i._lec == None:
+                                        i._lec = listlec[vitri]
+                                        
+                                # Xếp gv cho lớp đồ án
+                                for i in sche:
+                                    if i._course_name.strip().lower().count(lich._course_name.strip().lower()) > 0 and i._course_name.strip().lower().count("đồ án") != 0 and i._class_name == lich._class_name:
+                                        i._lec = listlec[vitri]
+                                break
+
+                if len(listalpha[tenmon]) == 2:
+
+                    for vitri in range(len(listlec)):
+                        # Tính tổng số môn mà gv được dạy
+                        maxx = math.floor(countmon(tenmon,sche)/2) + (int(listpoint[vitri]) - 6)
+                        if maxx <= 0:
+                            maxx = 1
+
+                        # Dự báo số môn sau khi xếp lịch xem có quá tổng số môn được dạy không thì mới xếp
+                        dubao =  lich._2lich
+                        if lich._lopghep != None:
+                            dubao = dubao + timlop(sche,lich._lopghep)._2lich
+
+                        if dubao + somonday(sche,listlec[vitri],tenmon) <= maxx:
+                        # Xét nếu mà có giảng viên ở lịch đó rồi không xếp nữa     
+                            if lich._lec == None:
+                                lich._lec = listlec[vitri]
+
+                                # Xếp gv cho lớp ghép
+                                for i in sche:
+                                    if lich._lopghep == i._stt and i._lec == None:
+                                        i._lec = listlec[vitri]
+
+                                        # Xếp gv cho lớp có 2 lịch
+                                        for j in sche:
+                                                if j._course_name == i._course_name and j._class_name == i._class_name and j._lec == None:
+                                                    j._lec = listlec[vitri]
+                                    
+                                # Xếp gv cho lớp có 2 lịch dạy
+                                for i in sche:
+                                    if lich._course_name == i._course_name and lich._class_name == i._class_name and i._lec == None:
+                                        i._lec = listlec[vitri]
+                                    
+                                # Xếp gv cho những môn đồ án
+                                for i in sche:
+                                    # Nếu có tên môn lại thêm chữ đồ án
+                                    if i._course_name.strip().lower().count(lich._course_name.strip().lower()) > 0 and i._course_name.strip().lower().count("đồ án") != 0 and i._class_name == lich._class_name and i._lec == None:
+                                        i._lec = listlec[vitri]
+                                break
+                        
+                if len(listalpha[tenmon]) == 1:
+                    lich._lec = listlec[0]
+                    for i in sche:
+                        if i._course_name.strip().lower().count(lich._course_name.strip().lower()) > 0 and i._class_name == lich._class_name:
+                            i._lec = listlec[0]
+    
+    # Xếp nốt nhưng môn đồ án chưa được xếp
+    for i in sche:
+        if i._lec == None and i._course_name.strip().lower().count("đồ án") != 0:
+            for j in sche:
+                if i != j and i._class_name == j._class_name and i._course_name.strip().lower().count(j._course_name.strip().lower()) != 0 and j._course_name.strip().lower().count("đồ án") == 0:
+                    i._lec = j._lec
+
+    # for tenmon in listalpha:
+    #     for lich in sche:
+    #         if tenmon.lower() == lich._course_name.lower():
+    #             print(tenmon,lich._lec)
+    #     print("____")    
+
 
 # Xếp lớp ghép
 def checklopghep(sche):
@@ -174,7 +282,6 @@ def checktrung(sche):
                sche[i]._session == sche[j]._session and 
                sche[i]._lec == sche[j]._lec and
                i != j) and sche[i]._lopghep != sche[j]._stt and sche[j]._lopghep != sche[i]._stt and (sche[i]._lopghep == None and sche[j]._lopghep == None):
-                # Còn trường hợp 3 lớp trùng nhau
                 if isinstance(sche[i]._trung,int) and isinstance(sche[j]._trung,int) and sche[i]._trung == sche[j]._trung:
                     continue
                 else:
@@ -205,7 +312,6 @@ def check2lich(sche):
         if i._2lich == 1:
             for j in sche:
                 if i._course_code == j._course_code and i._class_name == j._class_name and j._2lich == 1 and i != j:
-                    print(i._class_name)
                     count = count + 1
                     ds.append(j)
                     i._2lich = count
@@ -321,13 +427,14 @@ def list_save(sche):
         ds.append(x)
     return ds
 
-# list_ = readfile('tkb.xlsx')
+list_ = readfile('tkb.xlsx')
 
-# lopghep(list_)
-# xepgiangvien(list_)
+checklopghep(list_)
+check2lich(list_)
+xepgiangvien(list_)
 # checktrung(list_)
 
-# listtest = list_print(list_)
+listtest = list_print(list_)
 
 # print(listtest)
 
