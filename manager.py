@@ -270,39 +270,32 @@ def checklopghep(sche):
                         j._lopghep = i._stt
                         break
 
-# Kiểm tra trùng lịch
+# Tìm những lớp mà giáo viên bị dạy trùng (loại trừ lớp ghép)
 def checktrung(sche):
-    index = 1
-    for i in range(len(sche)):
-        cong = False
-        for j in range(len(sche)):
-            # Khác mã học phần, cùng thứ, cùng tiết, cùng giảng viên(các tuần có thể khác nhau)
-            if(sche[i]._course_code != sche[j]._course_code and 
-               sche[i]._day == sche[j]._day and 
-               sche[i]._session == sche[j]._session and 
-               sche[i]._lec == sche[j]._lec and
-               i != j) and sche[i]._lopghep != sche[j]._stt and sche[j]._lopghep != sche[i]._stt and (sche[i]._lopghep == None and sche[j]._lopghep == None):
-                if isinstance(sche[i]._trung,int) and isinstance(sche[j]._trung,int) and sche[i]._trung == sche[j]._trung:
-                    continue
-                else:
-                    #So sánh thứ tự tuần có thế lấy ra tuần trùng
+    for i in sche:
+        for j in sche:
+            # Cùng giáo viên, cùng thứ, cùng tiết, khác lớp ghép thì xét
+            if i != j and i._lec == j._lec and i._day == j._day and i._session == j._session and i._stt != j._lopghep and i._lopghep != j._stt:
+                if i._lec != None and j._lec != None:
+                    same = ""
+                    index = 0
                     for z in range(len("1234567890123456789012")):
-                        if len(sche[i]._week[z]) < 22:
-                            sche[i]._week = sche[i]._week + (22-len(sche[i]._week[z]))*" " 
-                        if len(sche[j]._week[z]) < 22:
-                            sche[j]._week = sche[j]._week + (22-len(sche[j]._week[z]))*" "     
-                        if sche[i]._week[z] == sche[j]._week[z] and sche[i]._week[z] != " " and sche[j]._week[z] != " ":
+                        if len(i._week[z]) < 22:
+                            i._week = i._week + (22-len(i._week[z]))*" " 
+                        if len(j._week[z]) < 22:
+                            j._week = j._week + (22-len(j._week[z]))*" "     
+                        if i._week[z] == j._week[z] and i._week[z] != " " and j._week[z] != " ":
                             # print(sche[i]._stt, sche[j]._stt,end="/")
-                            sche[i]._trung = index
-                            sche[j]._trung = index
-
-                            sche[i]._tuantrung.append(sche[i]._week[z])
-                            sche[j]._tuantrung.append(sche[j]._week[z])
+                            index = j._stt
+                            # same.append(j._week[z])
+                            same = same + j._week[z]
                             # print(sche[i]._trung,sche[j]._trung,end="/")
                             # print(sche[i]._week[z])
-                            cong = True
-        if cong:            
-            index = index + 1
+                        else:
+                            same = same + " "
+                    if index != 0:
+                        i._trung.append(index)        
+                        i._tuantrung[j._stt] = same
 
 # Tìm những lớp có 2 lịch ở 1 môn
 def check2lich(sche):
@@ -343,6 +336,11 @@ def countmon(name,sche):
             list_monhoc.append(i)
     return len(list_monhoc)
 
+def canchecktrung(sche):
+    for i in sche:
+        if i != None:
+            return True
+    return False
 
 # Đọc File .xlxs (Hàm: truyền đường dẫn trả về list)
 def readfile(path):
