@@ -14,6 +14,6 @@ class monhoc:
         self._week = WEEK
         self._lec = LEC
         self._lopghep = None
-        self._trung = None
-        self._tuantrung = []
+        self._trung = []
+        self._tuantrung = {}
         self._2lich = 1
