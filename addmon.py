@@ -1,6 +1,4 @@
-from tkinter import *
-from tkinter import ttk,messagebox
-import tkinter as tk
+from tkinter import ttk,messagebox,Tk
 import openpyxl
 import Guilec
 import os
@@ -59,12 +57,12 @@ class Addmonhoc:
 
         if self.classgoi.getname() == "Guigiangvien":
             Guilec.Guigiangvien(self.nguoigoi).close(self.nguoigoi)
-            Guilec.Guigiangvien(tk.Tk())   
+            Guilec.Guigiangvien(Tk())   
 
         workbook.close()
         self.root.destroy()
 
-# if __name__ == "__main__":
-#     root = tk.Tk()
-#     Addmonhoc(root,root)
-#     root.mainloop()
+if __name__ == "__main__":
+    root = Tk()
+    Addmonhoc(root,root)
+    root.mainloop()

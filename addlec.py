@@ -1,6 +1,4 @@
-from tkinter import *
-from tkinter import ttk,messagebox
-import tkinter as tk
+from tkinter import ttk,messagebox,Tk
 import openpyxl
 import Guilec
 import os
@@ -56,13 +54,13 @@ class Addlec:
         
         if self.classgoi.getname() == "Guigiangvien":
             Guilec.Guigiangvien(self.nguoigoi).close(self.nguoigoi)
-            Guilec.Guigiangvien(tk.Tk())
+            Guilec.Guigiangvien(Tk())
 
         workbook.close()
         self.root.destroy()
 
 
-# if __name__ == "__main__":
-#     root = tk.Tk()
-#     Addlec(root,root,Guilec)
-#     root.mainloop()
+if __name__ == "__main__":
+    root = Tk()
+    Addlec(root,root,Guilec)
+    root.mainloop()
