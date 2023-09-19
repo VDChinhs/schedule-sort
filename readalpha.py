@@ -3,9 +3,9 @@ import os
 
 path = os.getcwd() + "\\alpha.xlsx"
 
-def ds(path):
+def ds(path,sheetsl):
     workbook = openpyxl.load_workbook(path)
-    sheet = workbook.active
+    sheet = workbook[sheetsl]
     list_values = list(sheet.values)
     workbook.close()
     return list_values
@@ -18,9 +18,9 @@ def listcourse():
     return listmh
 
 # Lưu giá trị môn nào nhưng giáo viên nào dạy và chỉ số alpha của cô đó
-def listalpha():
+def listalpha(sheetsl):
     alpha = {}
-    danhsach = ds(path)
+    danhsach = ds(path,sheetsl)
     for row in range(1,len(danhsach)):
         lec = {}    
         for col in range(1,len(danhsach[0])):
@@ -46,3 +46,11 @@ def cansort():
             print(i)
             return False
     return True    
+
+def listsheet():
+    workbook = openpyxl.load_workbook(path)
+    sheet = workbook.sheetnames
+    workbook.close()
+    return sheet
+
+# print(ds(path))
