@@ -5,7 +5,8 @@ import os
 
 # GUI để thêm giáo viên 
 class Addlec:
-    def __init__(self,root,nguoigoi,classgoi):
+    def __init__(self,root,nguoigoi,classgoi,sheetsl):
+        self.sheetsl = sheetsl
         self.classgoi = classgoi
         self.nguoigoi = nguoigoi
         self.root = root
@@ -36,7 +37,7 @@ class Addlec:
         name = self.name_entry.get()
         path = os.getcwd() + "\\alpha.xlsx"
         workbook = openpyxl.load_workbook(path)
-        sheet = workbook.active
+        sheet = workbook[self.sheetsl]
         row = list(sheet.values)
 
         if len(row) == 0:
@@ -53,14 +54,14 @@ class Addlec:
         workbook.save(path)
         
         if self.classgoi.getname() == "Guigiangvien":
-            Guilec.Guigiangvien(self.nguoigoi).close(self.nguoigoi)
-            Guilec.Guigiangvien(Tk())
+            Guilec.Guigiangvien(self.nguoigoi,self.sheetsl).close(self.nguoigoi)
+            Guilec.Guigiangvien(Tk(),self.sheetsl)
 
         workbook.close()
         self.root.destroy()
 
 
-if __name__ == "__main__":
-    root = Tk()
-    Addlec(root,root,Guilec)
-    root.mainloop()
+# if __name__ == "__main__":
+#     root = Tk()
+#     Addlec(root,root,Guilec,"none")
+#     root.mainloop()

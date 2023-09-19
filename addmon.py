@@ -5,7 +5,8 @@ import os
 
 # GUI đế thêm môn học 
 class Addmonhoc:
-    def __init__(self,root,nguoigoi,classgoi):
+    def __init__(self,root,nguoigoi,classgoi,sheetsl):
+        self.sheetsl = sheetsl
         self.classgoi = classgoi
         self.nguoigoi = nguoigoi
         self.root = root
@@ -36,7 +37,7 @@ class Addmonhoc:
         name = self.name_entry.get()
         path = os.getcwd() + "\\alpha.xlsx"
         workbook = openpyxl.load_workbook(path)
-        sheet = workbook.active
+        sheet = workbook[self.sheetsl]
 
         data = list(sheet.values)
 
@@ -56,13 +57,13 @@ class Addmonhoc:
         workbook.save(path)
 
         if self.classgoi.getname() == "Guigiangvien":
-            Guilec.Guigiangvien(self.nguoigoi).close(self.nguoigoi)
-            Guilec.Guigiangvien(Tk())   
+            Guilec.Guigiangvien(self.nguoigoi,self.sheetsl).close(self.nguoigoi)
+            Guilec.Guigiangvien(Tk(),self.sheetsl)   
 
         workbook.close()
         self.root.destroy()
 
-if __name__ == "__main__":
-    root = Tk()
-    Addmonhoc(root,root)
-    root.mainloop()
+# if __name__ == "__main__":
+#     root = Tk()
+#     Addmonhoc(root,root,"none")
+#     root.mainloop()
