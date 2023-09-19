@@ -38,8 +38,8 @@ def somonday(sche,gv,tenmon):
     return count
 
 # Xếp giảng viên (ưu tiên xếp hết)
-def xepgiangvien(sche):
-    listalpha = ra.listalpha()
+def xepgiangvien(sche,sheetsl):
+    listalpha = ra.listalpha(sheetsl)
     
     for tenmon in listalpha:
         index = 0
@@ -150,8 +150,8 @@ def xepgiangvien(sche):
     #     print("____")
 
 # Xếp giảng viên (ưu tiên xếp theo alpha)
-def xepgiangvien1(sche):
-    listalpha = ra.listalpha()
+def xepgiangvien1(sche,sheetsl):
+    listalpha = ra.listalpha(sheetsl)
     
     for tenmon in listalpha:
         listlec = list(listalpha[tenmon].keys())
@@ -427,12 +427,12 @@ def list_save(sche):
 
 list_ = readfile('tkb.xlsx')
 
-checklopghep(list_)
-check2lich(list_)
-xepgiangvien(list_)
+# checklopghep(list_)
+# check2lich(list_)
+# xepgiangvien(list_,"Sheet1")
 # checktrung(list_)
 
-listtest = list_print(list_)
+# listtest = list_print(list_)
 
 # print(listtest)
 

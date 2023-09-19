@@ -1,13 +1,14 @@
-from tkinter import *
-from tkinter import ttk,messagebox,filedialog
+from tkinter import ttk,messagebox,filedialog,Menu,Tk
 from openpyxl.styles import NamedStyle
 import tkinter as tk
 import openpyxl
 import addlec
 import addmon
+import addnam
 import manager as mn
 import Guilec
 import os
+import readalpha as ra
 
 
 #GUI hiện thị lịch
@@ -15,7 +16,6 @@ class Guische:
     def __init__(self,window):
         self.cansave = False
         self.path = os.getcwd() + "\\alpha.xlsx"
-        self.checktrung = FALSE
         self.list_copy = []
 
         self.window = window
@@ -24,28 +24,40 @@ class Guische:
         self.frame = ttk.Frame(self.window)
         self.frame.pack()
 
+        style = ttk.Style(self.window)
+
+        # self.window.tk.call("source", "forest-light.tcl")
+        # self.window.tk.call("source", "forest-dark.tcl")
+        # style.theme_use("forest-light")
+        
+        style.configure("Custom.TButton", font=("Helvetica", 13))
+
         self.widgets_frame = ttk.LabelFrame(self.frame, text= "Xử lý")
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
-        self.name_entry = ttk.Entry(self.widgets_frame, font=("Helvetica", 12))
+        self.name_entry = ttk.Entry(self.widgets_frame, font=("Helvetica", 14))
         self.name_entry.insert(0,"Alpha")
         # self.name_entry.bind("<FocusIn>", lambda e: self.name_entry.delete('0', 'end'))
         self.name_entry.grid(row=2,column=0,sticky='ew')
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Sửa", command=self.sua)
+        self.button1 = ttk.Button(self.widgets_frame, text="Sửa", command=self.sua, style="Custom.TButton")
         self.button1.grid(row=3, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên(Full)", command=self.xepgiangvien)
-        self.button1.grid(row=4, column=0, padx=5, pady=5, sticky="nsew")
+        self.status_combobox = ttk.Combobox(self.widgets_frame, values=ra.listsheet(), font=("Helvetica", 14))
+        self.status_combobox.current(0)
+        self.status_combobox.grid(row=4, column=0, padx=5, pady=5,  sticky="ew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên(Alpha)", command=self.xepgiangvien1)
+        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên(Full)", command=self.xepgiangvien, style="Custom.TButton")
         self.button1.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Kiểm tra lớp trùng", command=self.checkloptrung)
+        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên(Alpha)", command=self.xepgiangvien1, style="Custom.TButton")
         self.button1.grid(row=6, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Xuất File Excel", command=self.save)
+        self.button1 = ttk.Button(self.widgets_frame, text="Kiểm tra lớp trùng", command=self.checkloptrung, style="Custom.TButton")
         self.button1.grid(row=7, column=0, padx=5, pady=5, sticky="nsew")
+
+        self.button1 = ttk.Button(self.widgets_frame, text="Xuất File Excel", command=self.save, style="Custom.TButton")
+        self.button1.grid(row=8, column=0, padx=5, pady=5, sticky="nsew")
 
         self.treeFrame = ttk.Frame(self.frame)
         self.treeFrame.grid(row=0, column=1, pady=10)
@@ -56,14 +68,18 @@ class Guische:
         self.treeview = ttk.Treeview(self.treeFrame, show="headings",yscrollcommand=self.treeScroll.set, columns=self.cols, height=35)
         for i in self.cols:
             if i == "Tên môn học":
-                self.treeview.column(i, width=270)
+                self.treeview.column(i, width=330)
             elif i == "Tuần":
-                self.treeview.column(i, width=140)
+                self.treeview.column(i, width=160)
             else:
                 self.treeview.column(i, width=100)
 
         self.treeview.pack()
         self.treeScroll.config(command=self.treeview.yview) 
+
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=("Helvetica", 12))
+        self.treeview.tag_configure("my_font", font=("Helvetica", 12))
 
         def on_treeview_cell_select(event):
             region = self.treeview.identify_region(event.x, event.y)
@@ -89,9 +105,10 @@ class Guische:
 
         self.lecturerMenu = Menu(self.menubar, tearoff = 0)
         self.menubar.add_cascade(label = "Giảng viên", menu = self.lecturerMenu)
-        self.lecturerMenu.add_cascade(label = "Thông tin", command= self.thongtin)
-        self.lecturerMenu.add_cascade(label = "Thêm giảng viên", command= self.addgiangvien)
-        self.lecturerMenu.add_cascade(label = "Thêm môn học", command= self.addmonhoc)
+        self.lecturerMenu.add_cascade(label = "Thông Tin", command= self.thongtin)
+        self.lecturerMenu.add_cascade(label = "Thêm Năm Học", command= self.addnamhoc)
+        self.lecturerMenu.add_cascade(label = "Thêm Giảng Viên", command= self.addgiangvien)
+        self.lecturerMenu.add_cascade(label = "Thêm Môn Học", command= self.addmonhoc)
     
 
     def close(self):
@@ -118,6 +135,7 @@ class Guische:
         self.treeview.delete(*self.treeview.get_children())
 
     def thongtin(self):
+        selected_table = self.status_combobox.get()
         if len(self.colfirst()) == 0 and len(self.rowfirst()) == 0:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên và môn học")
         elif len(self.colfirst()) == 0 :
@@ -125,15 +143,25 @@ class Guische:
         elif len(self.rowfirst()) == 0 :
             messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên")
         else:
-            Guilec.Guigiangvien(tk.Tk())
+            Guilec.Guigiangvien(Tk(),selected_table)
+            
+    def updatecombo(self):
+        self.status_combobox["value"] = ra.listsheet()
+
+    def addnamhoc(self):
+        selected_table = self.status_combobox.get()
+        self.second_window = tk.Toplevel(self.window)
+        addnam.Addnam(self.second_window,self.window,Guische,selected_table,self.updatecombo)
 
     def addgiangvien(self):
-        root = tk.Tk()
-        addlec.Addlec(root,self.window,Guische)
+        selected_table = self.status_combobox.get()
+        root = Tk()
+        addlec.Addlec(root,self.window,Guische,selected_table)
 
     def addmonhoc(self):
-        root = tk.Tk()
-        addmon.Addmonhoc(root,self.window,Guische)
+        selected_table = self.status_combobox.get()
+        root = Tk()
+        addmon.Addmonhoc(root,self.window,Guische,selected_table)
 
     def sua(self):
         pass
@@ -150,13 +178,13 @@ class Guische:
 
     # Xếp giảng viên ưu tiên xếp hết
     def xepgiangvien(self):
+        selected_table = self.status_combobox.get()
         try:
             self.treeview.delete(*self.treeview.get_children())
             self.list_xep = mn.readfile(self.file_path)
-            self.checktrung = True
             mn.checklopghep(self.list_xep)
             mn.check2lich(self.list_xep)
-            mn.xepgiangvien(self.list_xep)
+            mn.xepgiangvien(self.list_xep,selected_table)
             self.load_data(self.list_xep)
             self.list_ = self.list_xep
         except:
@@ -166,13 +194,13 @@ class Guische:
 
     # Xếp giảng viên ưu tiên xếp theo alpha
     def xepgiangvien1(self):
+        selected_table = self.status_combobox.get()
         try:
             self.treeview.delete(*self.treeview.get_children())
             self.list_xep = mn.readfile(self.file_path)
-            self.checktrung = True
             mn.checklopghep(self.list_xep)
             mn.check2lich(self.list_xep)
-            mn.xepgiangvien1(self.list_xep)
+            mn.xepgiangvien1(self.list_xep,selected_table)
             self.load_data(self.list_xep)
             self.list_ = self.list_xep
         except:
@@ -181,7 +209,7 @@ class Guische:
         messagebox.showinfo(title="Thông báo",message="Xếp giảng viên xong")
 
     def checkloptrung(self):
-        if self.checktrung:
+        if mn.canchecktrung(self.list_):
             self.treeview.delete(*self.treeview.get_children())
             mn.checktrung(self.list_)
             self.load_data(self.list_)
@@ -233,12 +261,13 @@ class Guische:
             for i in range(len(value_list)):
                 if value_list[i] == None:
                     value_list[i] = '-'
-            self.treeview.insert('', tk.END, values=value_list)
+            self.treeview.insert('', tk.END, values=value_list, tags=("my_font",))
 
     def rowfirst(self):
+        selected_table = self.status_combobox.get()
         row = []
         workbook = openpyxl.load_workbook(self.path)
-        sheet = workbook.active
+        sheet = workbook[selected_table]
         data = list(sheet.values)
         if len(data) == 0:
             return row
@@ -247,9 +276,10 @@ class Guische:
             return row[1:]
     
     def colfirst(self):
+        selected_table = self.status_combobox.get()
         col = []
         workbook = openpyxl.load_workbook(self.path)
-        sheet = workbook.active
+        sheet = workbook[selected_table]
         data = list(sheet.values)
         for i in data[1:]:
             col.append(i[0])

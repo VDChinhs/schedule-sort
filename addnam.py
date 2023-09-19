@@ -1,6 +1,5 @@
 from tkinter import ttk,messagebox,Tk
 import openpyxl
-import Guilec
 import os
 import readalpha as ra
 
@@ -63,7 +62,7 @@ class Addnam:
             worksheet.cell(column = 1, row = 1,value = "Môn")
             workbook.save(path)
             workbook.close()
-            
+
 # if __name__ == "__main__":
 #     root = Tk()
 #     Addnam(root,root,Guilec,"None")
