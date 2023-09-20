@@ -14,12 +14,14 @@ import readalpha as ra
 #GUI hiện thị lịch
 class Guische:
     def __init__(self,window):
+        
         self.cansave = False
         self.path = os.getcwd() + "\\alpha.xlsx"
         self.list_copy = []
 
         self.window = window
         self.window.title('Lịch giảng dạy')
+        self.window.geometry('+300+270')
     
         self.frame = ttk.Frame(self.window)
         self.frame.pack()
@@ -44,7 +46,8 @@ class Guische:
         self.button1.grid(row=3, column=0, padx=5, pady=5, sticky="nsew")
 
         self.status_combobox = ttk.Combobox(self.widgets_frame, values=ra.listsheet(), font=("Helvetica", 14))
-        self.status_combobox.current(0)
+        if len(ra.listsheet()) != 0:
+            self.status_combobox.current(0)
         self.status_combobox.grid(row=4, column=0, padx=5, pady=5,  sticky="ew")
 
         self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên(Full)", command=self.xepgiangvien, style="Custom.TButton")
@@ -136,6 +139,9 @@ class Guische:
 
     def thongtin(self):
         selected_table = self.status_combobox.get()
+        if not os.path.exists(self.path):
+            messagebox.showwarning(title="Chú ý",message="Vui lòng thêm năm học")
+            return
         if len(self.colfirst()) == 0 and len(self.rowfirst()) == 0:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên và môn học")
         elif len(self.colfirst()) == 0 :
@@ -143,7 +149,7 @@ class Guische:
         elif len(self.rowfirst()) == 0 :
             messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên")
         else:
-            Guilec.Guigiangvien(Tk(),selected_table)
+            Guilec.Guigiangvien(Tk(),selected_table,Guische,self.updatecombo)
             
     def updatecombo(self):
         self.status_combobox["value"] = ra.listsheet()
@@ -151,24 +157,30 @@ class Guische:
     def addnamhoc(self):
         selected_table = self.status_combobox.get()
         self.second_window = tk.Toplevel(self.window)
-        addnam.Addnam(self.second_window,self.window,Guische,selected_table,self.updatecombo)
+        addnam.Addnam(self.second_window,self.window,Guische,selected_table,self.updatecombo,self.updatecombo)
 
     def addgiangvien(self):
-        selected_table = self.status_combobox.get()
-        root = Tk()
-        addlec.Addlec(root,self.window,Guische,selected_table)
+        # file_path = os.getcwd() + "\\alpha.xlsx"
+        if os.path.exists(self.path):
+            selected_table = self.status_combobox.get()
+            root = Tk()
+            addlec.Addlec(root,self.window,Guische,selected_table)
+        else:
+            messagebox.showwarning(title="Chú ý",message="Vui lòng thêm năm học")
 
     def addmonhoc(self):
-        selected_table = self.status_combobox.get()
-        root = Tk()
-        addmon.Addmonhoc(root,self.window,Guische,selected_table)
-
+        # file_path = os.getcwd() + "\\alpha.xlsx"
+        if os.path.exists(self.path):
+            selected_table = self.status_combobox.get()
+            root = Tk()
+            addmon.Addmonhoc(root,self.window,Guische,selected_table)
+        else:
+            messagebox.showwarning(title="Chú ý",message="Vui lòng thêm năm học")
     def sua(self):
         pass
 
     def creatfile():
         file_path = os.getcwd() + "\\alpha.xlsx"
-
         if not os.path.exists(file_path):
             workbook = openpyxl.Workbook()
             worksheet = workbook.active
@@ -285,11 +297,9 @@ class Guische:
             col.append(i[0])
         return col
     
-    def getname():
-        return Guische.__name__
 
 if __name__ == "__main__":
-    Guische.creatfile()
+    # Guische.creatfile()
     window = Tk()
     Guische(window)
     window.mainloop()

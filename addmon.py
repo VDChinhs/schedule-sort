@@ -6,11 +6,13 @@ import os
 # GUI đế thêm môn học 
 class Addmonhoc:
     def __init__(self,root,nguoigoi,classgoi,sheetsl):
+        
+        self.path = os.getcwd() + "\\alpha.xlsx"
         self.sheetsl = sheetsl
         self.classgoi = classgoi
         self.nguoigoi = nguoigoi
         self.root = root
-        self.root.geometry('400x120')
+        self.root.geometry('400x120+1500+50')
         self.root.title('Thêm môn học')
 
         self.frame = ttk.Frame(self.root)
@@ -35,8 +37,7 @@ class Addmonhoc:
     def insert_row(self):
         col = []
         name = self.name_entry.get()
-        path = os.getcwd() + "\\alpha.xlsx"
-        workbook = openpyxl.load_workbook(path)
+        workbook = openpyxl.load_workbook(self.path)
         sheet = workbook[self.sheetsl]
 
         data = list(sheet.values)
@@ -54,16 +55,36 @@ class Addmonhoc:
             
         row_values = [name]
         sheet.append(row_values)
-        workbook.save(path)
+        workbook.save(self.path)
 
-        if self.classgoi.getname() == "Guigiangvien":
-            Guilec.Guigiangvien(self.nguoigoi,self.sheetsl).close(self.nguoigoi)
-            Guilec.Guigiangvien(Tk(),self.sheetsl)   
+        if self.classgoi.__name__ == "Guigiangvien" and (len(self.socot()) != 0 and len(self.sohang()) != 0):
+            Guilec.Guigiangvien(self.nguoigoi,self.sheetsl,Guilec).close(self.nguoigoi)
+            Guilec.Guigiangvien(Tk(),self.sheetsl,Guilec)   
 
         workbook.close()
         self.root.destroy()
+    
+    def sohang(self):
+        row = []
+        workbook = openpyxl.load_workbook(self.path)
+        sheet = workbook[self.sheetsl]
+        data = list(sheet.values)
+        if len(data) == 0:
+            return row
+        else:
+            row = data[0]
+            return row[1:]
+    
+    def socot(self):
+        col = []
+        workbook = openpyxl.load_workbook(self.path)
+        sheet = workbook[self.sheetsl]
+        data = list(sheet.values)
+        for i in data[1:]:
+            col.append(i[0])
+        return col
 
 # if __name__ == "__main__":
 #     root = Tk()
-#     Addmonhoc(root,root,"none")
+#     Addmonhoc(root,root,"None")
 #     root.mainloop()

@@ -7,18 +7,21 @@ import addnam
 import readalpha as ra
 import os
 
-
-
 # GUI hiển thị chí số alpha giáo viên ứng với mỗi môn học
 class Guigiangvien:
 
-    def __init__(self,window,sheetsl):
+    def __init__(self,window,sheetsl,schegoi,schecombo = None):
 
         self.window = window
-        self.path = os.getcwd() + "\\alpha.xlsx"
         self.sheetsl = sheetsl
 
+        if schegoi.__name__ == "Guische":
+            self.schecombo = schecombo
+
+        self.path = os.getcwd() + "\\alpha.xlsx"
+
         self.window.title('Lịch giảng dạy')
+        self.window.geometry('+0+0')
 
         self.frame = ttk.Frame(self.window)
         self.frame.pack()
@@ -96,7 +99,7 @@ class Guigiangvien:
     def addnamhoc(self):
         selected_table = self.status_combobox2.get()
         self.second_window = tk.Toplevel(self.window)
-        addnam.Addnam(self.second_window,self.window,Guigiangvien,selected_table,self.updatecombo)
+        addnam.Addnam(self.second_window,self.window,Guigiangvien,selected_table,self.updatecombo,self.schecombo)
         
     def addgiangvien(self):
         selected_table = self.status_combobox2.get()
@@ -217,13 +220,10 @@ class Guigiangvien:
         listsheet = ra.listsheet()
         if len(self.socot()) == 0 and len(self.sohang()) == 0:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên và môn học")
-            self.status_combobox2.set(self.sheetsl)
         elif len(self.socot()) == 0 :
             messagebox.showwarning(title="Chú ý",message="Không có thông tin môn học vui lòng thêm môn học")
-            self.status_combobox2.set(self.sheetsl)
         elif len(self.sohang()) == 0 :
             messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên")
-            self.status_combobox2.set(self.sheetsl)
         else:
             for i in listsheet:
                 if selected_table == i:
@@ -259,10 +259,7 @@ class Guigiangvien:
     def updatecombo(self):
         self.status_combobox2["value"] = ra.listsheet()         
 
-    def getname():
-        return Guigiangvien.__name__
-
 if __name__ == "__main__":
     window = Tk()
-    Guigiangvien(window,"Sheet1")
+    Guigiangvien(window,"Sheet1",Guigiangvien)
     window.mainloop()
