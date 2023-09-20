@@ -48,9 +48,10 @@ def cansort():
     return True    
 
 def listsheet():
-    workbook = openpyxl.load_workbook(path)
-    sheet = workbook.sheetnames
-    workbook.close()
-    return sheet
-
-# print(ds(path))
+    if not os.path.exists(path):
+        return []
+    else:
+        workbook = openpyxl.load_workbook(path)
+        sheet = workbook.sheetnames
+        workbook.close()
+        return sheet
