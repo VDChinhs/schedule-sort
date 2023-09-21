@@ -262,18 +262,36 @@ class Guische:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
     
     def load_data(self,data):
+        colors = ["#E6F1D8", "white"]
+        row_index = 0
         # data dạng đối tượng rồi mới chuyển thành dạng list
         list_data = mn.list_print(data)
 
         for col_name in self.cols:
             self.treeview.heading(col_name, text=col_name)
 
+        chuoi = list_data[0][1] 
+        swap = ""
         for value in list_data:
+            if chuoi == value[1]:
+                bg_color = colors[0]
+            else:
+                swap = colors[0]
+                colors[0] = colors[1]
+                colors[1] = swap
+
+                bg_color = colors[0]
+                chuoi = value[1]
             value_list = list(value)
             for i in range(len(value_list)):
                 if value_list[i] == None:
                     value_list[i] = '-'
-            self.treeview.insert('', tk.END, values=value_list, tags=("my_font",))
+            self.treeview.insert('', tk.END, values=value_list, tags=("my_font",bg_color))
+
+            row_index = row_index + 1
+
+        for color in colors:
+            self.treeview.tag_configure(color, background=color)
 
     def rowfirst(self):
         selected_table = self.status_combobox.get()
