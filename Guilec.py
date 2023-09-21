@@ -127,6 +127,8 @@ class Guigiangvien:
         return row[0]
 
     def load_data(self,sheetsl):
+        colors = ["#E6F1D8", "white"]
+        row_index = 0
         workbook = openpyxl.load_workbook(self.path)
         sheet = workbook[sheetsl]
 
@@ -135,11 +137,16 @@ class Guigiangvien:
             self.treeview.heading(col_name, text=col_name)
 
         for value in list_values[1:]:
+            bg_color = colors[row_index % len(colors)]
             value_list = list(value)
             for i in range(len(value_list)):
                 if value_list[i] == None:
                     value_list[i] = '-'
-            self.treeview.insert('', tk.END, values=value_list, tags=("my_font",))
+            self.treeview.insert('', tk.END, values=value_list, tags=("my_font",bg_color))
+            row_index = row_index + 1
+        
+        for color in colors:
+            self.treeview.tag_configure(color, background=color)
 
     # Sửa thông tin 
     def sua(self):  
@@ -184,12 +191,12 @@ class Guigiangvien:
             else:
                 self.treeview.column(i, width=100)
 
-        self.treeview.pack()
         self.treeScroll.config(command=self.treeview.yview)
         # style = ttk.Style()
         self.style.configure("Treeview.Heading", font=("Helvetica", 12))
         self.treeview.tag_configure("my_font", font=("Helvetica", 12))
         self.load_data(table)
+        self.treeview.pack()
 
         def select(event):
             indexrow = 0
