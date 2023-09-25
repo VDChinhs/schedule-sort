@@ -266,7 +266,7 @@ class Guigiangvien:
     def updatecombo(self):
         self.status_combobox2["value"] = ra.listsheet()         
 
-if __name__ == "__main__":
-    window = Tk()
-    Guigiangvien(window,"Sheet1",Guigiangvien)
-    window.mainloop()
+# if __name__ == "__main__":
+#     window = Tk()
+#     Guigiangvien(window,"Sheet1",Guigiangvien)
+#     window.mainloop()

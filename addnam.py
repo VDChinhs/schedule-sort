@@ -40,7 +40,7 @@ class Addnam:
     def insert_sheet(self):
         name = self.name_entry.get()
 
-        if not os.self.path.exists(self.path):
+        if not os.path.exists(self.path):
             workbook = openpyxl.Workbook()
             worksheet = workbook.active
             worksheet.title = name
