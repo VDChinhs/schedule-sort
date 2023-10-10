@@ -5,13 +5,15 @@ import os
 
 # GUI đế thêm môn học 
 class Addmonhoc:
-    def __init__(self,root,nguoigoi,classgoi,sheetsl):
+    def __init__(self,root,nguoigoi,classgoi,sheetsl,resettable):
         
         self.path = os.getcwd() + "\\alpha.xlsx"
         self.sheetsl = sheetsl
         self.classgoi = classgoi
         self.nguoigoi = nguoigoi
         self.root = root
+        self.resettable = resettable
+
         self.root.geometry('400x120+1500+50')
         self.root.title('Thêm môn học')
 
@@ -58,8 +60,9 @@ class Addmonhoc:
         workbook.save(self.path)
 
         if self.classgoi.__name__ == "Guigiangvien" and (len(self.socot()) != 0 and len(self.sohang()) != 0):
-            Guilec.Guigiangvien(self.nguoigoi,self.sheetsl,Guilec).close(self.nguoigoi)
-            Guilec.Guigiangvien(Tk(),self.sheetsl,Guilec)   
+            self.resettable()
+            # Guilec.Guigiangvien(self.nguoigoi,self.sheetsl,Guilec).close(self.nguoigoi)
+            # Guilec.Guigiangvien(Tk(),self.sheetsl,Guilec)   
 
         workbook.close()
         self.root.destroy()
