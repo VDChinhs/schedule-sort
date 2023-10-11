@@ -376,12 +376,14 @@ def readfile(path):
                         start = sh.cell(row = i, column = j).value
                     case "Kết thúc":
                         end = sh.cell(row = i, column = j).value
+                    case "12345678901234567":
+                        week = sh.cell_value(i, j)
                     case "1234567890123456789012":
                         week = sh.cell(row = i, column = j).value
                     case "Giảng viên":
                         lec = sh.cell(row = i, column = j).value
             mh = lichhoc.monhoc(stt,cousre_code,course_name,class_name,class_com,day,seesion,room,credit,start,end,week)
-            ds.append(mh)
+            ds.append(mh)     
     wb.close()
     return ds      
 
@@ -425,7 +427,60 @@ def list_save(sche):
         ds.append(x)
     return ds
 
-list_ = readfile('tkb.xlsx')
+def rowread(path):
+    workbook = xlrd.open_workbook(path)
+    sheet = workbook["Sheet1"]
+    for i in range(0,sheet.nrows):
+        val = sheet.cell_value(i, 1)
+        if isinstance(val, int) or (val is not None and str(val).isdigit()):
+            return i
+# Read File .xls
+def readfilexls(path):
+    ds = []
+    workbook = xlrd.open_workbook(path)
+    sheet = workbook["Sheet1"]
+    rowindex = rowread(path)
+    for i in range(sheet.nrows):
+        val = sheet.cell_value(i, 0)
+        if isinstance(val, int) or (val is not None and str(val).isdigit()):
+            for j in range(0,sheet.ncols):
+                match sheet.cell_value(rowindex - 2, j):
+                    case "STT":
+                        stt = sheet.cell_value(i, j)
+                    case "Mã học phần":
+                        cousre_code = sheet.cell_value(i, j)   
+                    case "Tên môn học":
+                        course_name = sheet.cell_value(i, j)
+                    case "Mã lớp học":
+                        class_name = sheet.cell_value(i, j)
+                    case "Lớp ghép":
+                        class_com = sheet.cell_value(i, j)
+
+                match sheet.cell_value(rowindex - 1, j):
+                    case "Thứ":
+                        day = sheet.cell_value(i, j)
+                    case "Tiết":
+                        seesion = sheet.cell_value(i, j)
+                    case "Phòng học":
+                        room = sheet.cell_value(i, j)
+                    case "Số TC":
+                        credit = sheet.cell_value(i, j)
+                    case "Bắt đầu":
+                        start = sheet.cell_value(i, j)
+                    case "Kết thúc":
+                        end = sheet.cell_value(i, j)
+                    case "12345678901234567":
+                        week = sheet.cell_value(i, j)
+                    case "1234567890123456789":
+                        week = sheet.cell_value(i, j)
+                    case "Giảng viên":
+                        lec = sheet.cell(row = i, column = j).value
+            mh = lichhoc.monhoc(stt,cousre_code,course_name,class_name,class_com,day,seesion,room,credit,start,end,week)
+            ds.append(mh)
+    return ds
+
+# list_ = readfile("C:\\Users\\ADMIN\\Desktop\\NghienCuuKhoaHoc\\tkb.xlsx")
+# list_= readfilexls("C:\\Users\\ADMIN\\Desktop\\NghienCuuKhoaHoc\\phan-cong-giang-day-lich-hoc-to-bo-mon-10-10-2023-17-42-43.xls")
 
 # checklopghep(list_)
 # check2lich(list_)
@@ -435,41 +490,3 @@ list_ = readfile('tkb.xlsx')
 # listtest = list_print(list_)
 
 # print(listtest)
-
-
-
-# Read File .xls
-# workbook = xlrd.open_workbook('D:\\Code Python in VSC\\phan_cong.xls')
-# sheet = workbook["Sheet2"]
-
-# for i in range(sheet.nrows):
-#     val = sheet.cell_value(i, colSTT1(sheet))
-#     if isinstance(val, int) or (val is not None and str(val).isdigit()):
-#         for j in range(1,sheet.ncols):
-#             match sheet.cell_value(rowheading1(sheet), j):
-#                 case "STT":
-#                     stt = sheet.cell_value(i, j)
-#                 case "Mã học phần":
-#                     cousre_code = sheet.cell_value(i, j)   
-#                 case "Tên môn học":
-#                     course_name = sheet.cell_value(i, j)
-#                 case "Mã lớp học":
-#                     class_name = sheet.cell_value(i, j)
-#                 case "Lớp ghép":
-#                     class_com = sheet.cell_value(i, j)
-#                 case "Thứ":
-#                     day = sheet.cell_value(i, j)
-#                 case "Tiết":
-#                     seesion = sheet.cell_value(i, j)
-#                 case "Phòng học":
-#                     room = sheet.cell_value(i, j)
-#                 case "Số TC":
-#                     credit = sheet.cell_value(i, j)
-#                 case "Bắt đầu":
-#                     start = sheet.cell_value(i, j)
-#                 case "Kết thúc":
-#                     end = sheet.cell_value(i, j)
-#                 case "1234567890123456789012":
-#                     week = sheet.cell_value(i, j)
-#         mh = lichhoc.monhoc(stt,cousre_code,course_name,class_name,class_com,day,seesion,room,credit,start,end,week)
-#         list.append(mh)

@@ -93,7 +93,7 @@ class Guische:
                 self.name_entry.delete('0','end')
                 self.name_entry.insert(0,selected_value)
 
-        self.treeview.bind("<ButtonRelease-1>", on_treeview_cell_select)
+        self.treeview.bind("<ButtonRelease-1>", on_treeview_cell_select())
 
         # self.load_data()
 
@@ -123,7 +123,12 @@ class Guische:
             print("Thư mục được chọn:", self.file_path)
             self.treeview.delete(*self.treeview.get_children())
 
-            self.list_ = mn.readfile(self.file_path)
+            if os.path.splitext(self.file_path)[1] == ".xlsx":
+                self.list_ = mn.readfile(self.file_path) 
+                
+            if os.path.splitext(self.file_path)[1] == ".xls":
+                self.list_ = mn.readfilexls(self.file_path)
+
             for i in self.list_:
                 self.list_copy.append(i)
 

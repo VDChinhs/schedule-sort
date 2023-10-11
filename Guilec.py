@@ -62,11 +62,14 @@ class Guigiangvien:
         self.button1 = ttk.Button(self.widgets_frame, text="Sửa", command=self.sua, style="My.TButton")
         self.button1.grid(row=4, column=0, padx=5, pady=5, sticky="nsew")
 
+        self.button1 = ttk.Button(self.widgets_frame, text="Xóa", command=self.xoa, style="My.TButton")
+        self.button1.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
+
         self.separator = ttk.Separator(self.widgets_frame)
-        self.separator.grid(row=5, column=0, padx=(20, 10), pady=10, sticky="ew")
+        self.separator.grid(row=6, column=0, padx=(20, 10), pady=10, sticky="ew")
 
         self.button1 = ttk.Button(self.widgets_frame, text="Kiểm tra", command=self.kiemtra, style="My.TButton")
-        self.button1.grid(row=6, column=0, padx=5, pady=5, sticky="nsew")
+        self.button1.grid(row=7, column=0, padx=5, pady=5, sticky="nsew")
 
 
         # Khung thu 2
@@ -104,12 +107,12 @@ class Guigiangvien:
     def addgiangvien(self):
         selected_table = self.status_combobox2.get()
         root = Tk()
-        addlec.Addlec(root,self.window,Guigiangvien,selected_table)
+        addlec.Addlec(root,self.window,Guigiangvien,selected_table,self.reserttable)
 
     def addmonhoc(self):
         selected_table = self.status_combobox2.get()
         root = Tk()
-        addmon.Addmonhoc(root,self.window,Guigiangvien,selected_table)
+        addmon.Addmonhoc(root,self.window,Guigiangvien,selected_table,self.reserttable)
 
     def colfirst(self,sheetsl):
         col = []
@@ -164,6 +167,44 @@ class Guigiangvien:
         else:
             messagebox.showerror(title = "Lỗi",message = "Vui lòng nhập số")
 
+    #Nhập tên vào ô name_entry xong rồi xóa
+    def xoa(self):
+        delrow = False
+        delcol = False
+        sucsses = False
+        selected_table = self.status_combobox2.get()
+        name = self.name_entry.get()
+        if name == "":
+            return messagebox.showerror(title = "Lỗi",message = "Vui lòng nhập dữ liệu để xóa")
+        workbook = openpyxl.load_workbook(self.path)
+        sheet = workbook[selected_table]
+        for i in range(1,sheet.max_column + 1):
+            value = sheet.cell(row = 1, column = i).value
+            if value.strip() == name.strip():
+                indexcol = i
+                delcol = True
+
+        for j in range(1,sheet.max_row + 1):
+            value = sheet.cell(row = j, column = 1).value
+            if value.strip() == name.strip():
+                indexrow = j
+                delrow = True
+
+        if delcol:
+            sheet.delete_cols(indexcol)
+            sucsses = True
+
+        if delrow:
+            sheet.delete_rows(indexrow)
+            sucsses = True
+
+        workbook.save(self.path)
+        if sucsses:
+            self.reserttable()
+            self.name_entry.delete('0','end') 
+            # messagebox.showinfo(title = "Thông báo",message = "Xóa thành công")
+        
+        
     # Kiểm tra xem tổng chỉ số alpha trong 1 môn có = 12 không
     def kiemtra(self):
         selected_table = self.status_combobox2.get()
@@ -211,7 +252,10 @@ class Guigiangvien:
                 selected_column = self.treeview.identify_column(event.x)  
                 selected_column_id = int(selected_column[1:]) - 2
                 selected_value = self.treeview.item(selected_item[0], "values")[int(selected_column[1:]) - 1]
-                self.status_combobox.current(selected_column_id)
+                if(selected_column_id < 0):
+                    pass
+                else:
+                    self.status_combobox.current(selected_column_id)
                 if (selected_value.isnumeric()):
                     self.name_entry.delete('0','end')
                     self.name_entry.insert(0,selected_value)
@@ -241,6 +285,27 @@ class Guigiangvien:
                     self.status_combobox.current(0)
                     self.status_combobox1["value"] = self.colfirst(self.sheetsl)
                     self.status_combobox1.current(0)
+    
+    def reserttable(self):
+        selected_table = self.status_combobox2.get()
+        listsheet = ra.listsheet()
+        if len(self.socot()) == 0 and len(self.sohang()) == 0:
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên và môn học")
+        elif len(self.socot()) == 0 :
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin môn học vui lòng thêm môn học")
+        elif len(self.sohang()) == 0 :
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên")
+        else:
+            for i in listsheet:
+                if selected_table == i:
+                    self.sheetsl = selected_table
+                    self.treeview.destroy()
+                    self.creattable(selected_table,self.rowfirst(selected_table))
+                    self.status_combobox["value"] = self.rowfirst(self.sheetsl)[1:]
+                    self.status_combobox.current(0)
+                    self.status_combobox1["value"] = self.colfirst(self.sheetsl)
+                    self.status_combobox1.current(0)
+
     def sohang(self):
         selected_table = self.status_combobox2.get()
         row = []
@@ -266,7 +331,7 @@ class Guigiangvien:
     def updatecombo(self):
         self.status_combobox2["value"] = ra.listsheet()         
 
-# if __name__ == "__main__":
-#     window = Tk()
-#     Guigiangvien(window,"Sheet1",Guigiangvien)
-#     window.mainloop()
+if __name__ == "__main__":
+    window = Tk()
+    Guigiangvien(window,"Sheet1",Guigiangvien)
+    window.mainloop()
