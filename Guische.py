@@ -204,7 +204,6 @@ class Guische:
             if os.path.splitext(self.file_path)[1] == ".xls":
                 self.list_xep = mn.readfilexls(self.file_path)
 
-            # self.list_xep = mn.readfile(self.file_path)
             mn.checklopghep(self.list_xep)
             mn.check2lich(self.list_xep)
             mn.xepgiangvien(self.list_xep,selected_table)
@@ -220,14 +219,12 @@ class Guische:
         selected_table = self.status_combobox.get()
         try:
             self.treeview.delete(*self.treeview.get_children())
-
             if os.path.splitext(self.file_path)[1] == ".xlsx":
                 self.list_xep = mn.readfile(self.file_path) 
                 
             if os.path.splitext(self.file_path)[1] == ".xls":
                 self.list_xep = mn.readfilexls(self.file_path)
 
-            # self.list_xep = mn.readfile(self.file_path)
             mn.checklopghep(self.list_xep)
             mn.check2lich(self.list_xep)
             mn.xepgiangvien1(self.list_xep,selected_table)
