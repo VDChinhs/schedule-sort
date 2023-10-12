@@ -93,7 +93,7 @@ class Guische:
                 self.name_entry.delete('0','end')
                 self.name_entry.insert(0,selected_value)
 
-        self.treeview.bind("<ButtonRelease-1>", on_treeview_cell_select())
+        self.treeview.bind("<ButtonRelease-1>", on_treeview_cell_select)
 
         # self.load_data()
 
