@@ -16,7 +16,7 @@ class Addnam:
         self.root = root
 
         self.root.title('Thêm năm học')
-        self.root.geometry('400x120+1500+50')
+        self.root.geometry('400x130+1500+50')
 
         self.frame = ttk.Frame(root)
         self.frame.pack()

@@ -14,8 +14,12 @@ class Addmonhoc:
         self.root = root
         self.resettable = resettable
 
-        self.root.geometry('400x120+1500+50')
+        self.root.geometry('400x130+1500+50')
         self.root.title('Thêm môn học')
+
+        self.style = ttk.Style(self.root)
+        self.root.tk.call("source", "theme-light.tcl")
+        self.style.theme_use("theme-light")
 
         self.frame = ttk.Frame(self.root)
         self.frame.pack()
@@ -86,8 +90,3 @@ class Addmonhoc:
         for i in data[1:]:
             col.append(i[0])
         return col
-
-# if __name__ == "__main__":
-#     root = Tk()
-#     Addmonhoc(root,root,"None")
-#     root.mainloop()

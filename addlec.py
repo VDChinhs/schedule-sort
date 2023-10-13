@@ -15,7 +15,11 @@ class Addlec:
         self.resettable = resettable
 
         self.root.title('Thêm giảng viên')
-        self.root.geometry('400x120+1500+50')
+        self.root.geometry('400x130+1500+50')
+
+        self.style = ttk.Style(self.root)
+        self.root.tk.call("source", "theme-light.tcl")
+        self.style.theme_use("theme-light")
 
         self.frame = ttk.Frame(root)
         self.frame.pack()
@@ -82,8 +86,3 @@ class Addlec:
         for i in data[1:]:
             col.append(i[0])
         return col
-
-# if __name__ == "__main__":
-#     root = Tk()
-#     Addlec(root,root,Guilec,"None")
-#     root.mainloop()
