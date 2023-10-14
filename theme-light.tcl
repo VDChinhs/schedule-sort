@@ -156,7 +156,11 @@ namespace eval ttk::theme::forest-light {
             ] -border 5 -padding {2 6 6 6}
             
         ttk::style element create Combobox.arrow image $I(down) -width 15 -sticky e
-  
-    }
 
+        # Treeview
+        
+        ttk::style map Treeview \
+            -background [list selected $colors(-selectbg)] \
+            -foreground [list selected $colors(-selectfg)]
+    }
 }
