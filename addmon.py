@@ -5,7 +5,7 @@ import os
 
 # GUI đế thêm môn học 
 class Addmonhoc:
-    def __init__(self,root,nguoigoi,classgoi,sheetsl,resettable):
+    def __init__(self,root,nguoigoi,classgoi,sheetsl,resettable = None):
         
         self.path = os.getcwd() + "\\alpha.xlsx"
         self.sheetsl = sheetsl
