@@ -10,7 +10,6 @@ import Guilec
 import os
 import readalpha as ra
 
-
 #GUI hiện thị lịch
 class Guische:
     def __init__(self,window):
@@ -21,16 +20,15 @@ class Guische:
 
         self.window = window
         self.window.title('Lịch giảng dạy')
-        self.window.geometry('+300+270')
+        self.window.geometry('+290+275')
     
         self.frame = ttk.Frame(self.window)
         self.frame.pack()
 
         style = ttk.Style(self.window)
 
-        # self.window.tk.call("source", "forest-light.tcl")
-        # self.window.tk.call("source", "forest-dark.tcl")
-        # style.theme_use("forest-light")
+        self.window.tk.call("source", "theme-light.tcl")
+        style.theme_use("theme-light")
         
         style.configure("Custom.TButton", font=("Helvetica", 13))
 
@@ -174,7 +172,6 @@ class Guische:
             messagebox.showwarning(title="Chú ý",message="Vui lòng thêm năm học")
 
     def addmonhoc(self):
-        # file_path = os.getcwd() + "\\alpha.xlsx"
         if os.path.exists(self.path):
             selected_table = self.status_combobox.get()
             root = Tk()
@@ -330,7 +327,6 @@ class Guische:
             col.append(i[0])
         return col
     
-
 if __name__ == "__main__":
     # Guische.creatfile()
     window = Tk()

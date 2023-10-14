@@ -28,9 +28,8 @@ class Guigiangvien:
 
         self.style = ttk.Style(self.window)
 
-        # self.window.tk.call("source", "forest-light.tcl")
-        # self.window.tk.call("source", "forest-dark.tcl")
-        # self.style.theme_use("forest-light")
+        self.window.tk.call("source", "theme-light.tcl")
+        self.style.theme_use("theme-light")
 
         # Khung thu 1
 
@@ -70,7 +69,6 @@ class Guigiangvien:
 
         self.button1 = ttk.Button(self.widgets_frame, text="Kiểm tra", command=self.kiemtra, style="My.TButton")
         self.button1.grid(row=7, column=0, padx=5, pady=5, sticky="nsew")
-
 
         # Khung thu 2
         self.creattable(self.sheetsl,self.rowfirst(self.sheetsl))
@@ -201,9 +199,7 @@ class Guigiangvien:
         workbook.save(self.path)
         if sucsses:
             self.reserttable()
-            self.name_entry.delete('0','end') 
-            # messagebox.showinfo(title = "Thông báo",message = "Xóa thành công")
-        
+            self.name_entry.delete('0','end')        
         
     # Kiểm tra xem tổng chỉ số alpha trong 1 môn có = 12 không
     def kiemtra(self):
@@ -331,7 +327,7 @@ class Guigiangvien:
     def updatecombo(self):
         self.status_combobox2["value"] = ra.listsheet()         
 
-if __name__ == "__main__":
-    window = Tk()
-    Guigiangvien(window,"Sheet1",Guigiangvien)
-    window.mainloop()
+# if __name__ == "__main__":
+#     window = Tk()
+#     Guigiangvien(window,"Sheet1",Guigiangvien)
+#     window.mainloop()
