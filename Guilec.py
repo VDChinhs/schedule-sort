@@ -47,7 +47,7 @@ class Guigiangvien:
         self.status_combobox1.current(0)
         self.status_combobox1.grid(row=1, column=0, padx=5, pady=5,  sticky="ew")
 
-        self.status_combobox2 = ttk.Combobox(self.widgets_frame, values=ra.listsheet(), font=("Helvetica", 14))
+        self.status_combobox2 = ttk.Combobox(self.widgets_frame, values=ra.listsheet(), font=("Helvetica", 14),state="readonly")
         # self.status_combobox2.current(0)
         self.status_combobox2.set(self.sheetsl)
         self.status_combobox2.grid(row=2, column=0, padx=5, pady=5,  sticky="ew")
@@ -95,7 +95,7 @@ class Guigiangvien:
         window.destroy()
 
     def thongtin(self):
-        print(len(self.rowfirst(self.sheetsl)))
+        print("Đang chọn menu Thông tin")
 
     def addnamhoc(self):
         selected_table = self.status_combobox2.get()
@@ -163,7 +163,7 @@ class Guigiangvien:
             self.treeview.delete(*self.treeview.get_children())
             self.load_data(self.sheetsl)
         else:
-            messagebox.showerror(title = "Lỗi",message = "Vui lòng nhập số")
+            messagebox.showerror(title = "Lỗi",message = "Vui lòng nhập số",parent = self.window)
 
     #Nhập tên vào ô name_entry xong rồi xóa
     def xoa(self):
@@ -173,7 +173,7 @@ class Guigiangvien:
         selected_table = self.status_combobox2.get()
         name = self.name_entry.get()
         if name == "":
-            return messagebox.showerror(title = "Lỗi",message = "Vui lòng nhập dữ liệu để xóa")
+            return messagebox.showerror(title = "Lỗi",message = "Vui lòng nhập dữ liệu để xóa",parent = self.window)
         workbook = openpyxl.load_workbook(self.path)
         sheet = workbook[selected_table]
         for i in range(1,sheet.max_column + 1):
@@ -211,7 +211,7 @@ class Guigiangvien:
             for i in listpoint:
                 tong = tong + int(i)
             if tong != 12:
-                messagebox.showwarning(title = "Chú ý",message = tenmon + ": tổng hệ số alpha chưa = 12")
+                messagebox.showwarning(title = "Chú ý",message = tenmon + ": tổng hệ số alpha chưa = 12",parent = self.window)
                 break
 
     # Tạo bảng với dữ liệu và tiêu đề
@@ -247,7 +247,10 @@ class Guigiangvien:
             if region == "cell":
                 selected_column = self.treeview.identify_column(event.x)  
                 selected_column_id = int(selected_column[1:]) - 2
-                selected_value = self.treeview.item(selected_item[0], "values")[int(selected_column[1:]) - 1]
+                try:
+                    selected_value = self.treeview.item(selected_item[0], "values")[int(selected_column[1:]) - 1]
+                except:
+                    print("Đang chọn cột môn")
                 if(selected_column_id < 0):
                     pass
                 else:
@@ -263,14 +266,15 @@ class Guigiangvien:
 
     def switch_table(self,event):
     # Hiển thị TreeView tương ứng với giá trị Combobox
+        self.status_combobox2.select_clear()
         selected_table = self.status_combobox2.get()
         listsheet = ra.listsheet()
         if len(self.socot()) == 0 and len(self.sohang()) == 0:
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên và môn học")
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên và môn học",parent = self.window)
         elif len(self.socot()) == 0 :
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin môn học vui lòng thêm môn học")
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin môn học vui lòng thêm môn học",parent = self.window)
         elif len(self.sohang()) == 0 :
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên")
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên",parent = self.window)
         else:
             for i in listsheet:
                 if selected_table == i:
@@ -286,11 +290,11 @@ class Guigiangvien:
         selected_table = self.status_combobox2.get()
         listsheet = ra.listsheet()
         if len(self.socot()) == 0 and len(self.sohang()) == 0:
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên và môn học")
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên và môn học",parent = self.window)
         elif len(self.socot()) == 0 :
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin môn học vui lòng thêm môn học")
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin môn học vui lòng thêm môn học",parent = self.window)
         elif len(self.sohang()) == 0 :
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên")
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên",parent = self.window)
         else:
             for i in listsheet:
                 if selected_table == i:

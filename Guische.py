@@ -20,7 +20,7 @@ class Guische:
 
         self.window = window
         self.window.title('Lịch giảng dạy')
-        self.window.geometry('+290+275')
+        self.window.geometry('+200+150')
     
         self.frame = ttk.Frame(self.window)
         self.frame.pack()
@@ -38,15 +38,19 @@ class Guische:
         self.name_entry = ttk.Entry(self.widgets_frame, font=("Helvetica", 14))
         self.name_entry.insert(0,"Alpha")
         # self.name_entry.bind("<FocusIn>", lambda e: self.name_entry.delete('0', 'end'))
-        self.name_entry.grid(row=2,column=0,sticky='ew')
+        self.name_entry.grid(row=1,column=0,sticky='ew')
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Sửa", command=self.sua, style="Custom.TButton")
-        self.button1.grid(row=3, column=0, padx=5, pady=5, sticky="nsew")
+        # self.button1 = ttk.Button(self.widgets_frame, text="Sửa", command=self.sua, style="Custom.TButton")
+        # self.button1.grid(row=2, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.status_combobox = ttk.Combobox(self.widgets_frame, values=ra.listsheet(), font=("Helvetica", 14))
+        self.status_combobox = ttk.Combobox(self.widgets_frame, values=ra.listsheet(), font=("Helvetica", 14),state="readonly")
         if len(ra.listsheet()) != 0:
             self.status_combobox.current(0)
-        self.status_combobox.grid(row=4, column=0, padx=5, pady=5,  sticky="ew")
+        self.status_combobox.grid(row=3, column=0, padx=5, pady=5,  sticky="ew")
+        self.status_combobox.bind("<<ComboboxSelected>>", self.clearcombobox)
+            
+        self.separator = ttk.Separator(self.widgets_frame)
+        self.separator.grid(row=4, column=0, padx=(20, 10), pady=10, sticky="ew")
 
         self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên(Full)", command=self.xepgiangvien, style="Custom.TButton")
         self.button1.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
@@ -65,13 +69,23 @@ class Guische:
         self.treeScroll = ttk.Scrollbar(self.treeFrame)
         self.treeScroll.pack(side="right", fill="y")
 
-        self.cols = ["STT","Mã học phần","Tên môn học", "Mã Lớp học phần", "Thứ","Tiết","Tuần","Giảng viên","Ghép","Trùng"]
+        self.cols = ["STT","Mã học phần","Tên môn học", "Mã Lớp học phần", "Thứ","Tiết","Tuần","Giảng viên","Lớp ghép","Trùng lịch"]
         self.treeview = ttk.Treeview(self.treeFrame, show="headings",yscrollcommand=self.treeScroll.set, columns=self.cols, height=35)
         for i in self.cols:
-            if i == "Tên môn học":
+            if i == "STT":
+                self.treeview.column(i, width=50)
+            elif i == "Tên môn học":
                 self.treeview.column(i, width=330)
+            elif i == "Thứ":
+                self.treeview.column(i, width=50)
+            elif i == "Tiết":
+                self.treeview.column(i, width=75)
             elif i == "Tuần":
-                self.treeview.column(i, width=160)
+                self.treeview.column(i, width=210)
+            elif i == "Lớp ghép":
+                self.treeview.column(i, width=75)
+            elif i == "Trùng lịch":
+                self.treeview.column(i, width=120)
             else:
                 self.treeview.column(i, width=100)
 
@@ -142,6 +156,11 @@ class Guische:
 
     def thongtin(self):
         selected_table = self.status_combobox.get()
+
+        if selected_table == "":
+            messagebox.showwarning(title="Chú ý",message="Vui chọn năm học")
+            return
+        
         if not os.path.exists(self.path):
             messagebox.showwarning(title="Chú ý",message="Vui lòng thêm năm học")
             return
@@ -153,7 +172,10 @@ class Guische:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên")
         else:
             Guilec.Guigiangvien(Tk(),selected_table,Guische,self.updatecombo)
-            
+
+    def clearcombobox(self,event):
+            self.status_combobox.select_clear()
+
     def updatecombo(self):
         self.status_combobox["value"] = ra.listsheet()
 
@@ -163,7 +185,10 @@ class Guische:
         addnam.Addnam(self.second_window,self.window,Guische,selected_table,self.updatecombo,self.updatecombo)
 
     def addgiangvien(self):
-        # file_path = os.getcwd() + "\\alpha.xlsx"
+        if self.status_combobox.get() == "":
+            messagebox.showwarning(title="Chú ý",message="Vui chọn năm học")
+            return
+        
         if os.path.exists(self.path):
             selected_table = self.status_combobox.get()
             root = Tk()
@@ -172,6 +197,10 @@ class Guische:
             messagebox.showwarning(title="Chú ý",message="Vui lòng thêm năm học")
 
     def addmonhoc(self):
+        if self.status_combobox.get() == "":
+            messagebox.showwarning(title="Chú ý",message="Vui chọn năm học")
+            return
+        
         if os.path.exists(self.path):
             selected_table = self.status_combobox.get()
             root = Tk()
@@ -193,6 +222,9 @@ class Guische:
     # Xếp giảng viên ưu tiên xếp hết
     def xepgiangvien(self):
         selected_table = self.status_combobox.get()
+        if selected_table == "":
+            messagebox.showwarning(title="Chú ý",message="Vui lòng chọn năm học")
+            return
         try:
             self.treeview.delete(*self.treeview.get_children())
             if os.path.splitext(self.file_path)[1] == ".xlsx":
@@ -214,6 +246,9 @@ class Guische:
     # Xếp giảng viên ưu tiên xếp theo alpha
     def xepgiangvien1(self):
         selected_table = self.status_combobox.get()
+        if selected_table == "":
+            messagebox.showwarning(title="Chú ý",message="Vui lòng chọn năm học")
+            return
         try:
             self.treeview.delete(*self.treeview.get_children())
             if os.path.splitext(self.file_path)[1] == ".xlsx":
