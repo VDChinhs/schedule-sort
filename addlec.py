@@ -15,7 +15,7 @@ class Addlec:
         self.resettable = resettable
 
         self.root.title('Thêm giảng viên')
-        self.root.geometry('400x130+1500+50')
+        self.root.geometry('400x130+760+475')
 
         self.style = ttk.Style(self.root)
         self.root.tk.call("source", "theme-light.tcl")
@@ -28,6 +28,7 @@ class Addlec:
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
         self.name_entry = ttk.Entry(self.widgets_frame,font=("Helvetica", 20))
+        self.name_entry.focus_force()
         self.name_entry.insert(0,"Tên")
         self.name_entry.bind("<FocusIn>", lambda e: self.name_entry.delete('0', 'end'))
         self.name_entry.grid(row=0,column=0,sticky='ew')
@@ -42,6 +43,10 @@ class Addlec:
 
     def insert_col(self):
         name = self.name_entry.get()
+        if name == "":
+            messagebox.showwarning(title="Cảnh báo",message="Vui lòng không để trống",parent = self.root)
+            return
+        
         workbook = openpyxl.load_workbook(self.path)
         sheet = workbook[self.sheetsl]
         row = list(sheet.values)
@@ -51,8 +56,8 @@ class Addlec:
             sheet.cell(column = 2, row = 1,value = name)
         else:
             for i in row[0]:
-                if i.lower() == name:
-                    messagebox.showerror(title="Lỗi",message="Giảng viên đã tồn tại")
+                if i.strip() == name.strip():
+                    messagebox.showerror(title="Lỗi",message="Giảng viên đã tồn tại",parent = self.root)
                     return
                 else:
                      sheet.cell(column = len(row[0]) + 1, row = 1,value = name)               

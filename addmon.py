@@ -14,7 +14,7 @@ class Addmonhoc:
         self.root = root
         self.resettable = resettable
 
-        self.root.geometry('400x130+1500+50')
+        self.root.geometry('400x130+760+475')
         self.root.title('Thêm môn học')
 
         self.style = ttk.Style(self.root)
@@ -28,6 +28,7 @@ class Addmonhoc:
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
         self.name_entry = ttk.Entry(self.widgets_frame,font=("Helvetica", 20))
+        self.name_entry.focus_force()
         self.name_entry.insert(0,"Tên")
         self.name_entry.bind("<FocusIn>", lambda e: self.name_entry.delete('0', 'end'))
         self.name_entry.grid(row=0,column=0,sticky='ew')
@@ -41,8 +42,12 @@ class Addmonhoc:
         self.insert_row()
 
     def insert_row(self):
-        col = []
         name = self.name_entry.get()
+        if name == "":
+            messagebox.showwarning(title="Cảnh báo",message="Vui lòng không để trống",parent = self.root)
+            return
+        
+        col = []
         workbook = openpyxl.load_workbook(self.path)
         sheet = workbook[self.sheetsl]
 
@@ -55,8 +60,8 @@ class Addmonhoc:
         for i in data[1:]:
             col.append(i[0])
         for j in col:
-            if j.lower() == name.lower():
-                messagebox.showerror(title="Lỗi", message="Môn học đã tồn tại")
+            if j.lower().strip() == name.lower().strip():
+                messagebox.showerror(title="Lỗi", message="Môn học đã tồn tại",parent = self.root)
                 return
             
         row_values = [name]

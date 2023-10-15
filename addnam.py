@@ -16,7 +16,7 @@ class Addnam:
         self.root = root
 
         self.root.title('Thêm năm học')
-        self.root.geometry('400x130+1500+50')
+        self.root.geometry('400x130+760+475')
 
         self.frame = ttk.Frame(root)
         self.frame.pack()
@@ -25,6 +25,7 @@ class Addnam:
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
         self.name_entry = ttk.Entry(self.widgets_frame,font=("Helvetica", 20))
+        self.name_entry.focus_force()
         self.name_entry.insert(0,"Tên")
         self.name_entry.bind("<FocusIn>", lambda e: self.name_entry.delete('0', 'end'))
         self.name_entry.grid(row=0,column=0,sticky='ew')
@@ -39,7 +40,10 @@ class Addnam:
 
     def insert_sheet(self):
         name = self.name_entry.get()
-
+        if name == "":
+            messagebox.showwarning(title="Cảnh báo",message="Vui lòng không để trống",parent = self.root)
+            return
+        
         if not os.path.exists(self.path):
             workbook = openpyxl.Workbook()
             worksheet = workbook.active
@@ -53,8 +57,8 @@ class Addnam:
             self.schecombo()
         else:
             for i in ra.listsheet():
-                if i.lower() == name.lower():
-                    messagebox.showerror(title="Lỗi",message="Năm học đã tồn tại")
+                if i.lower().strip() == name.lower().strip():
+                    messagebox.showerror(title="Lỗi",message="Năm học đã tồn tại",parent = self.root)
                     return
                 
             workbook = openpyxl.load_workbook(self.path)
@@ -65,10 +69,11 @@ class Addnam:
             self.root.destroy()
             self.updatecombobox()
             self.schecombo()
-            self.chepdulieu(name)
+            if self.sheetsl != "":
+                self.chepdulieu(name)
 
     def chepdulieu(self,name):
-        answer = messagebox.askyesno(title="Gợi ý",message="Bạn có muốn sao chép năm học hiện tại sang năm học mới")
+        answer = messagebox.askyesno(title="Gợi ý",message="Bạn có muốn sao chép năm học hiện tại sang năm học mới",parent = self.nguoigoi)
         data = ra.ds(self.path,self.sheetsl)
         workbook = openpyxl.load_workbook(self.path)
         worksheet = workbook[name]
