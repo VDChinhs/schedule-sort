@@ -7,8 +7,11 @@ import addmon
 import addnam
 import manager as mn
 import Guilec
+import Guianalysis
 import os
 import readalpha as ra
+import matplotlib.pyplot as plt
+import numpy as np
 
 #GUI hiện thị lịch
 class Guische:
@@ -21,6 +24,7 @@ class Guische:
         self.window = window
         self.window.title('Lịch giảng dạy')
         self.window.geometry('+200+150')
+        self.window.iconbitmap("schedule.ico")
     
         self.frame = ttk.Frame(self.window)
         self.frame.pack()
@@ -118,13 +122,20 @@ class Guische:
         self.fileMenu.add_cascade(label = "Edit",command= self.edit)
         self.fileMenu.add_cascade(label = "Close",command= self.close)
 
+        self.window.bind('<Control-o>', lambda event: self.open())
+
         self.lecturerMenu = Menu(self.menubar, tearoff = 0)
         self.menubar.add_cascade(label = "Giảng viên", menu = self.lecturerMenu)
         self.lecturerMenu.add_cascade(label = "Thông Tin", command= self.thongtin)
         self.lecturerMenu.add_cascade(label = "Thêm Năm Học", command= self.addnamhoc)
         self.lecturerMenu.add_cascade(label = "Thêm Giảng Viên", command= self.addgiangvien)
         self.lecturerMenu.add_cascade(label = "Thêm Môn Học", command= self.addmonhoc)
-    
+
+        self.thongke = Menu(self.menubar, tearoff = 0)
+        self.menubar.add_cascade(label = "Phân tích thống kê", menu = self.thongke)
+        self.thongke.add_cascade(label = "Phân tích", command= self.phantich)
+        self.thongke.add_cascade(label = "Biểu đồ", command= self.bieudo)
+        
 
     def close(self):
         self.window.quit()
@@ -209,6 +220,43 @@ class Guische:
             messagebox.showwarning(title="Chú ý",message="Vui lòng thêm năm học")
     def sua(self):
         pass
+
+    def phantich(self):
+        if self.cansave:
+            if len(mn.ds_giangvien_trung(self.list_)) != 0:
+                Guianalysis.Guianalysis(Tk(),self.list_)
+            else:
+                messagebox.showwarning(title="Chú ý",message="Không có giảng viên nào bị trùng lịch")
+                return
+        else:
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
+
+    def bieudo(self):
+        if self.cansave:
+            x = []
+            data_percent = []
+            labels = []
+            for i in self.list_:
+                x.append(i._lec)
+
+            unique_list = list(set(x))
+
+            for i in unique_list:
+                data_percent.append(x.count(i))
+                labels.append(i)
+
+            for i in range(0,len(labels)):
+                if labels[i] == None:
+                    labels[i] = 'Trống'
+                    
+            y = np.array(data_percent)
+
+            explode = [0.1,0,0,0]
+            plt.title("Biểu đồ khối lượng dạy của các giảng viên")
+            plt.pie(y,labels=labels, autopct='%1.1f%%', wedgeprops={'edgecolor': 'white', 'linewidth': 1.5})
+            plt.show()
+        else:
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
 
     def creatfile():
         file_path = os.getcwd() + "\\alpha.xlsx"

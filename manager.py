@@ -385,7 +385,61 @@ def readfile(path):
             mh = lichhoc.monhoc(stt,cousre_code,course_name,class_name,class_com,day,seesion,room,credit,start,end,week)
             ds.append(mh)     
     wb.close()
-    return ds      
+    return ds    
+
+
+def flatten_list(input_list):
+    flattened_list = []
+    for element in input_list:
+        if isinstance(element, list):
+            flattened_list.extend(flatten_list(element))
+        else:
+            flattened_list.append(element)
+    return flattened_list
+
+def unique_elements(input_list):
+    seen_lists = set()
+    result = []
+
+    for element in input_list:
+        if isinstance(element, list):
+            flattened_sublist = tuple(flatten_list(element))
+            if flattened_sublist not in seen_lists:
+                seen_lists.add(flattened_sublist)
+                result.append(element)
+        else:
+            if element not in result:
+                result.append(element)
+
+    return result
+
+def ds_giangvien_trung(sche):
+    ds_giangvien_trung = []
+    for gv in sche:
+        if len(gv._trung) != 0:
+            ds_giangvien_trung.append(gv._lec)
+    ds_giangvien_trung = list(set(ds_giangvien_trung))
+    
+    return ds_giangvien_trung
+
+# Lấy danh sách để hiện thị ra nhưng lịch của các giảng viên bị trùng
+def list_printtrung(sche):
+    ds = []
+    for i in ds_giangvien_trung(sche):
+        x = [i]
+        for j in sche:
+            if j._lec == i and j._trung != 0:
+                for z in j._trung:
+                    y = [
+                        j._course_name,
+                        timlop(sche,z)._course_name,
+                        j._day,
+                        j._session,
+                        j._tuantrung[z]
+                    ]
+                    x.append(y)
+        ds.append(unique_elements(x))
+    return ds
 
 # Chuyển lưu dạng đối tượng về dạng list
 def list_print(sche):
