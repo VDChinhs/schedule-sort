@@ -1,4 +1,4 @@
-from tkinter import ttk,messagebox,Menu,Tk
+from tkinter import filedialog, ttk,messagebox,Menu,Tk
 import tkinter as tk
 import openpyxl
 import addlec
@@ -6,6 +6,7 @@ import addmon
 import addnam
 import readalpha as ra
 import os
+import manager as mn
 
 # GUI hiển thị chí số alpha giáo viên ứng với mỗi môn học
 class Guigiangvien:
@@ -69,6 +70,9 @@ class Guigiangvien:
 
         self.button1 = ttk.Button(self.widgets_frame, text="Kiểm tra", command=self.kiemtra, style="My.TButton")
         self.button1.grid(row=7, column=0, padx=5, pady=5, sticky="nsew")
+
+        self.button1 = ttk.Button(self.widgets_frame, text="Import Alpha", command=self.importalpha, style="My.TButton")
+        self.button1.grid(row=8, column=0, padx=5, pady=5, sticky="nsew")
 
         # Khung thu 2
         self.creattable(self.sheetsl,self.rowfirst(self.sheetsl))
@@ -173,7 +177,7 @@ class Guigiangvien:
         selected_table = self.status_combobox2.get()
         name = self.name_entry.get()
         if name == "":
-            return messagebox.showerror(title = "Lỗi",message = "Vui lòng nhập dữ liệu để xóa",parent = self.window)
+            return messagebox.showerror(title = "Lỗi",message = "Nhập tên giảng viên hoặc tên môn để xóa",parent = self.window)
         workbook = openpyxl.load_workbook(self.path)
         sheet = workbook[selected_table]
         for i in range(1,sheet.max_column + 1):
@@ -213,6 +217,70 @@ class Guigiangvien:
             if tong != 12:
                 messagebox.showwarning(title = "Chú ý",message = tenmon + ": tổng hệ số alpha chưa = 12",parent = self.window)
                 break
+
+    def importalpha(self):
+        self.file_path = filedialog.askopenfilename(filetypes=[("Excel Files", "*.xlsx *.xls",)],parent = self.window)
+
+        list_lec = []
+        list_course = []
+
+        if self.file_path:
+            if len(ra.ds(self.path,self.status_combobox2.get())) > 1:
+                answer = messagebox.askyesno(title="Gợi ý",message="Bạn có muốn tạo kỳ mới nếu không sẽ thay thế dữ liệu kỳ hiện tại",parent = self.window)
+            else:
+                answer = False
+            
+            self.treeview.delete(*self.treeview.get_children())
+
+            if os.path.splitext(self.file_path)[1] == ".xlsx":
+                self.list_ = mn.readfile(self.file_path, readlec = True) 
+                
+            if os.path.splitext(self.file_path)[1] == ".xls":
+                self.list_ = mn.readfilexls(self.file_path, readlec = True)
+
+            for i in self.list_:
+                if len(i._lec) < 25:
+                    list_lec.append(i._lec)
+                if i._course_name.strip().lower().count("đồ án") == 0:
+                    list_course.append(i._course_name)
+
+            list_lec = list(set(list_lec))
+            list_course = list(set(list_course))
+
+            self.list_importalpha = mn.list_importdata(self.list_,list_lec,list_course)
+
+            if answer:
+                selected_table = self.status_combobox2.get()
+                self.second_window = tk.Toplevel(self.window)
+                addnam.Addnam(self.second_window,self.window,Guigiangvien,selected_table,self.createsemesster,self.schecombo,getdata=True)
+
+            else:
+                workbook = openpyxl.load_workbook(self.path)
+                worksheet = workbook[self.status_combobox2.get()]
+
+                worksheet.delete_rows(1,worksheet.max_row)
+
+                for i in self.list_importalpha:
+                    worksheet.append(i)
+                    
+                workbook.save(self.path)
+                self.reserttable()
+        else:
+            print("Không có thư mục nào được chọn.")
+
+    def createsemesster(self,enter):
+        workbook = openpyxl.load_workbook(self.path)
+        workbook.create_sheet(enter)
+        worksheet = workbook[enter]
+        for i in self.list_importalpha:
+            worksheet.append(i)
+            
+        workbook.save(self.path)
+
+        self.updatecombo()
+        self.schecombo()
+
+        self.reserttable()
 
     # Tạo bảng với dữ liệu và tiêu đề
     def creattable(self,table,heading):

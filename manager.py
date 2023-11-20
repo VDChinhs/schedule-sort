@@ -343,7 +343,7 @@ def canchecktrung(sche):
     return False
 
 # Đọc File .xlxs (Hàm: truyền đường dẫn trả về list)
-def readfile(path):
+def readfile(path, readlec = False):
     ds = []
     wb = load_workbook(path)
     sh = wb.active
@@ -382,7 +382,10 @@ def readfile(path):
                         week = sh.cell(row = i, column = j).value
                     case "Giảng viên":
                         lec = sh.cell(row = i, column = j).value
-            mh = lichhoc.monhoc(stt,cousre_code,course_name,class_name,class_com,day,seesion,room,credit,start,end,week)
+            if readlec:
+                mh = lichhoc.monhoc(stt,cousre_code,course_name,class_name,class_com,day,seesion,room,credit,start,end,week,LEC = lec)
+            else:
+                mh = lichhoc.monhoc(stt,cousre_code,course_name,class_name,class_com,day,seesion,room,credit,start,end,week)
             ds.append(mh)     
     wb.close()
     return ds    
@@ -441,6 +444,34 @@ def list_printtrung(sche):
         ds.append(unique_elements(x))
     return ds
 
+def list_importdata(sche: list, list_lec: list, list_course: list):
+    ds = []
+
+    heading = list(list_lec)
+    heading.insert(0,"Môn")
+    ds.append(heading)
+
+    for i in list_course:
+        x = []
+        y = [None] * (len(list_lec) + 1)
+        y[0] = i
+
+        for j in sche:
+            if i == j._course_name:
+                if j._lec not in x:
+                    if len(j._lec) < 25:
+                        x.append(j._lec)
+
+        alpha = int(12/len(x))
+
+        for z in x:
+            vitri = list_lec.index(z)
+            y[vitri + 1] = alpha
+        
+        ds.append(tuple(y))
+
+    return ds
+
 # Chuyển lưu dạng đối tượng về dạng list
 def list_print(sche):
     ds = []
@@ -489,7 +520,7 @@ def rowread(path):
         if isinstance(val, int) or (val is not None and str(val).isdigit()):
             return i
 # Read File .xls
-def readfilexls(path):
+def readfilexls(path, readlec = False):
     ds = []
     workbook = xlrd.open_workbook(path)
     sheet = workbook["Sheet1"]
@@ -509,6 +540,8 @@ def readfilexls(path):
                         class_name = sheet.cell_value(i, j)
                     case "Lớp ghép":
                         class_com = sheet.cell_value(i, j)
+                    case "Giảng viên":
+                        lec = sheet.cell_value(i, j)
 
                 match sheet.cell_value(rowindex - 1, j):
                     case "Thứ":
@@ -527,9 +560,11 @@ def readfilexls(path):
                         week = sheet.cell_value(i, j)
                     case "1234567890123456789":
                         week = sheet.cell_value(i, j)
-                    case "Giảng viên":
-                        lec = sheet.cell(row = i, column = j).value
-            mh = lichhoc.monhoc(stt,cousre_code,course_name,class_name,class_com,day,seesion,room,credit,start,end,week)
+
+            if readlec:
+                mh = lichhoc.monhoc(stt,cousre_code,course_name,class_name,class_com,day,seesion,room,credit,start,end,week,LEC = lec)
+            else:
+                mh = lichhoc.monhoc(stt,cousre_code,course_name,class_name,class_com,day,seesion,room,credit,start,end,week)
             ds.append(mh)
     return ds
 
