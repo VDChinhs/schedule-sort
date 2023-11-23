@@ -22,7 +22,11 @@ class Addnam:
         self.frame = ttk.Frame(root)
         self.frame.pack()
 
-        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Năm học")
+        style = ttk.Style(self.root)
+        style.configure("My.TLabelframe.Label", font=("Helvetica", 13))
+        style.configure("Custom.TButton", font=("Helvetica", 13))
+
+        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Năm học",style="My.TLabelframe")
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
         self.name_entry = ttk.Entry(self.widgets_frame,font=("Helvetica", 20))
@@ -31,7 +35,7 @@ class Addnam:
         self.name_entry.bind("<FocusIn>", lambda e: self.name_entry.delete('0', 'end'))
         self.name_entry.grid(row=0,column=0,sticky='ew')
 
-        button = ttk.Button(self.widgets_frame, text="Thêm", command=self.insert_sheet)
+        button = ttk.Button(self.widgets_frame, text="Thêm", command=self.insert_sheet,style="Custom.TButton")
         button.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
 
         self.name_entry.bind("<Return>", self.perform_insert)
