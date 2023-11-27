@@ -12,14 +12,17 @@ class Guianalysis:
         self.window.geometry('+200+150')
         self.window.iconbitmap("schedule.ico")
 
-        self.notebook = ttk.Notebook(self.window)
 
         self.style = ttk.Style(self.window)
+
+        
 
         self.window.tk.call("source", "theme-light.tcl")
         self.style.theme_use("theme-light")
 
-        cols = ["Môn","Môn Trùng","Thứ","TIết","Tuần"]
+        self.notebook = ttk.Notebook(self.window)
+
+        cols = ["Môn","Môn Trùng","Mã lớp học phần","Thứ","TIết","Tuần"]
         list_print = mn.list_printtrung(self.list_data)
 
         for i in list_print:
@@ -31,6 +34,7 @@ class Guianalysis:
         tree = ttk.Treeview(tab, columns=columns, show="headings", height=20)
         self.style.configure("Treeview.Heading", font=("Helvetica", 12))
         tree.tag_configure("my_font", font=("Helvetica", 12))
+
         for col in columns:
             tree.heading(col, text=col)
             for i in columns:
@@ -38,14 +42,16 @@ class Guianalysis:
                     tree.column(i, width=330)
                 elif i == "Môn Trùng":
                     tree.column(i, width=330)
+                elif i == "Mã lớp học phần":
+                    tree.column(i, width=150,anchor= "center")
                 elif i == "Thứ":
-                    tree.column(i, width=50)
+                    tree.column(i, width=50,anchor= "center")
                 elif i == "Tiết":
-                    tree.column(i, width=75)
+                    tree.column(i, width=75,anchor= "center")
                 elif i == "Tuần":
                     tree.column(i, width=210)
                 else:
-                    tree.column(i, width=100)
+                    tree.column(i, width=100,anchor= "center")
 
         for row in data:
             tree.insert("", tk.END, values=row, tags=("my_font"))
@@ -53,6 +59,8 @@ class Guianalysis:
         tree.pack(expand=1, fill='both')
 
     def create_tab(self, tab_name, columns,data):
+        tab_font = ("Helvetica", 12)
+        self.style.configure("TNotebook.Tab", font=tab_font)
         tab = ttk.Frame(self.notebook)
         self.notebook.add(tab, text=tab_name)
         self.create_table(tab, columns,data)

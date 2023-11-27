@@ -34,9 +34,10 @@ class Guische:
         self.window.tk.call("source", "theme-light.tcl")
         style.theme_use("theme-light")
         
+        style.configure("My.TLabelframe.Label", font=("Helvetica", 13))
         style.configure("Custom.TButton", font=("Helvetica", 13))
 
-        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Xử lý")
+        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Xử lý",style="My.TLabelframe")
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
         self.name_entry = ttk.Entry(self.widgets_frame, font=("Helvetica", 14))
@@ -73,25 +74,27 @@ class Guische:
         self.treeScroll = ttk.Scrollbar(self.treeFrame)
         self.treeScroll.pack(side="right", fill="y")
 
-        self.cols = ["STT","Mã học phần","Tên môn học", "Mã Lớp học phần", "Thứ","Tiết","Tuần","Giảng viên","Lớp ghép","Trùng lịch"]
+        self.cols = ["STT","Mã học phần","Tên môn học", "Mã lớp học phần", "Thứ","Tiết","Tuần","Giảng viên","Lớp ghép","Trùng lịch"]
         self.treeview = ttk.Treeview(self.treeFrame, show="headings",yscrollcommand=self.treeScroll.set, columns=self.cols, height=35)
         for i in self.cols:
             if i == "STT":
-                self.treeview.column(i, width=50)
+                self.treeview.column(i, width=50,anchor= "center")
             elif i == "Tên môn học":
                 self.treeview.column(i, width=330)
+            elif i == "Mã lớp học phần":
+                self.treeview.column(i, width=150,anchor= "center")
             elif i == "Thứ":
-                self.treeview.column(i, width=50)
+                self.treeview.column(i, width=50,anchor= "center")
             elif i == "Tiết":
-                self.treeview.column(i, width=75)
+                self.treeview.column(i, width=75,anchor= "center")
             elif i == "Tuần":
                 self.treeview.column(i, width=210)
             elif i == "Lớp ghép":
-                self.treeview.column(i, width=75)
+                self.treeview.column(i, width=75,anchor= "center")
             elif i == "Trùng lịch":
-                self.treeview.column(i, width=120)
+                self.treeview.column(i, width=120,anchor= "center")
             else:
-                self.treeview.column(i, width=100)
+                self.treeview.column(i, width=100,anchor= "center")
 
         self.treeview.pack()
         self.treeScroll.config(command=self.treeview.yview) 
@@ -116,7 +119,7 @@ class Guische:
         self.menubar = Menu(window)
         self.window.config(menu = self.menubar)
 
-        self.fileMenu = Menu(self.menubar, tearoff = 0)
+        self.fileMenu = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
         self.menubar.add_cascade(label = "File", menu = self.fileMenu)
         self.fileMenu.add_cascade(label = "Open",command= self.open)
         self.fileMenu.add_cascade(label = "Edit",command= self.edit)
@@ -124,14 +127,14 @@ class Guische:
 
         self.window.bind('<Control-o>', lambda event: self.open())
 
-        self.lecturerMenu = Menu(self.menubar, tearoff = 0)
+        self.lecturerMenu = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
         self.menubar.add_cascade(label = "Giảng viên", menu = self.lecturerMenu)
         self.lecturerMenu.add_cascade(label = "Thông Tin", command= self.thongtin)
         self.lecturerMenu.add_cascade(label = "Thêm Năm Học", command= self.addnamhoc)
         self.lecturerMenu.add_cascade(label = "Thêm Giảng Viên", command= self.addgiangvien)
         self.lecturerMenu.add_cascade(label = "Thêm Môn Học", command= self.addmonhoc)
 
-        self.thongke = Menu(self.menubar, tearoff = 0)
+        self.thongke = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
         self.menubar.add_cascade(label = "Phân tích thống kê", menu = self.thongke)
         self.thongke.add_cascade(label = "Phân tích", command= self.phantich)
         self.thongke.add_cascade(label = "Biểu đồ", command= self.bieudo)

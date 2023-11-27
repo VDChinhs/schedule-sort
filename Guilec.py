@@ -34,8 +34,8 @@ class Guigiangvien:
 
         # Khung thu 1
 
-        self.style.configure("My.TLabelframe.Label", font=("Helvetica", 12))
-        self.style.configure("My.TButton", font=("Helvetica", 12))
+        self.style.configure("My.TLabelframe.Label", font=("Helvetica", 13))
+        self.style.configure("My.TButton", font=("Helvetica", 13))
 
         self.widgets_frame = ttk.LabelFrame(self.frame, text= "Thông tin giảng viên", style="My.TLabelframe")
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
@@ -81,7 +81,7 @@ class Guigiangvien:
         self.menubar = Menu(window)
         self.window.config(menu = self.menubar)
 
-        self.lecturerMenu = Menu(self.menubar, tearoff = 0)
+        self.lecturerMenu = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
         self.menubar.add_cascade(label = "Giảng viên", menu = self.lecturerMenu)
         self.lecturerMenu.add_cascade(label = "Thông Tin", command= self.thongtin)
         self.lecturerMenu.add_cascade(label = "Thêm Năm Học", command= self.addnamhoc)
@@ -226,7 +226,7 @@ class Guigiangvien:
 
         if self.file_path:
             if len(ra.ds(self.path,self.status_combobox2.get())) > 1:
-                answer = messagebox.askyesno(title="Gợi ý",message="Bạn có muốn tạo kỳ mới nếu không sẽ thay thế dữ liệu kỳ hiện tại",parent = self.window)
+                answer = messagebox.askyesno(title="Gợi ý",message="Bạn có muốn tạo kỳ mới không. Nếu không sẽ thay thế dữ liệu kỳ hiện tại",parent = self.window)
             else:
                 answer = False
             
@@ -294,7 +294,7 @@ class Guigiangvien:
             if i == "Môn":
                 self.treeview.column(i, width=330)
             else:
-                self.treeview.column(i, width=100)
+                self.treeview.column(i, width=100,anchor= "center")
 
         self.treeScroll.config(command=self.treeview.yview)
         # style = ttk.Style()

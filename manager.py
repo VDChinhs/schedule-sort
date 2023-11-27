@@ -436,13 +436,43 @@ def list_printtrung(sche):
                     y = [
                         j._course_name,
                         timlop(sche,z)._course_name,
+                        j._class_name,
                         j._day,
                         j._session,
                         j._tuantrung[z]
                     ]
                     x.append(y)
         ds.append(unique_elements(x))
+
+    for i in range(len(ds)):
+        ds[i] = loc(ds[i])
+
     return ds
+
+def loc(dulieu):
+    index = 0
+    while index < len(dulieu):
+        index1 = 0
+        
+        while index1 < len(dulieu):
+            if (dulieu[index][0] == dulieu[index1][1]) and (dulieu[index][1] == dulieu[index1][0]) and index != index1:
+                dulieu.pop(index1)
+                index = index - 1
+            index1 = index1 + 1
+        index = index + 1
+
+    # for i in range(1,len(dulieu)):
+    #     dulieu[i][-1] = bocach(dulieu[i][-1])
+
+    return dulieu
+
+def bocach(x):
+    chuoi = ""
+    for i in range(len(x)):
+        if x[i] != " ":
+            # day.append(x.index(i) + 1)
+            chuoi = chuoi + str(i + 1) + " "
+    return chuoi
 
 def list_importdata(sche: list, list_lec: list, list_course: list):
     ds = []
