@@ -74,6 +74,21 @@ namespace eval ttk::theme::forest-light {
                 Combobox.arrow -sticky nsew
             }
         }
+
+        ttk::style layout TNotebook {
+            Notebook.border -children {
+                TNotebook.Tab -expand 1 -side top
+                Notebook.client -sticky nsew
+            }
+        }
+
+        ttk::style layout TNotebook.Tab {
+            Notebook.tab -children {
+                Notebook.padding -side top -children {
+                    Notebook.label
+                }
+            }
+        }
         
         #Elements
 
@@ -120,6 +135,19 @@ namespace eval ttk::theme::forest-light {
                 hover $I(border-hover) \
             ] -border 5 -padding {8} -sticky nsew 
 
+        # Notebook
+        ttk::style configure TNotebook -padding 2
+
+        ttk::style element create Notebook.border image $I(card) -border 5
+
+        ttk::style element create Notebook.client image $I(notebook) -border 5
+
+        ttk::style element create Notebook.tab image \
+            [list $I(tab-basic) \
+                selected $I(tab-accent) \
+                active $I(tab-hover) \
+            ] -border 5 -padding {14 4}
+            
         # Combobox
         ttk::style map TCombobox -selectbackground [list \
             {!focus} $colors(-selectbg) \
