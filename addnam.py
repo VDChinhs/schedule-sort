@@ -1,7 +1,7 @@
 from tkinter import ttk,messagebox,Tk
 import openpyxl
-import os
 import readalpha as ra
+import os
 
 # GUI để thêm năm học 
 class Addnam:
@@ -18,6 +18,7 @@ class Addnam:
 
         self.root.title('Thêm năm học')
         self.root.geometry('400x130+760+475')
+        self.root.iconbitmap("schedule.ico")
 
         self.frame = ttk.Frame(root)
         self.frame.pack()

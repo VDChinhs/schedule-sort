@@ -12,10 +12,7 @@ class Guianalysis:
         self.window.geometry('+200+150')
         self.window.iconbitmap("schedule.ico")
 
-
         self.style = ttk.Style(self.window)
-
-        
 
         self.window.tk.call("source", "theme-light.tcl")
         self.style.theme_use("theme-light")

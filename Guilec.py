@@ -23,6 +23,7 @@ class Guigiangvien:
 
         self.window.title('Lịch giảng dạy')
         self.window.geometry('+0+0')
+        self.window.iconbitmap("schedule.ico")
 
         self.frame = ttk.Frame(self.window)
         self.frame.pack()

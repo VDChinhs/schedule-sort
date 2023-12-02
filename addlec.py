@@ -16,6 +16,7 @@ class Addlec:
 
         self.root.title('Thêm giảng viên')
         self.root.geometry('400x130+760+475')
+        self.root.iconbitmap("schedule.ico")
 
         self.style = ttk.Style(self.root)
         self.root.tk.call("source", "theme-light.tcl")
