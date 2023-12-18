@@ -150,10 +150,10 @@ class Guische:
             self.treeview.delete(*self.treeview.get_children())
 
             if os.path.splitext(self.file_path)[1] == ".xlsx":
-                self.list_ = mn.readfile(self.file_path) 
+                self.list_ = mn.readfile(self.file_path, readlec = True) 
                 
             if os.path.splitext(self.file_path)[1] == ".xls":
-                self.list_ = mn.readfilexls(self.file_path)
+                self.list_ = mn.readfilexls(self.file_path, readlec = True)
 
             for i in self.list_:
                 self.list_copy.append(i)

@@ -19,7 +19,7 @@ class Guianalysis:
 
         self.notebook = ttk.Notebook(self.window)
 
-        cols = ["Môn","Môn Trùng","Mã lớp học phần","Thứ","TIết","Tuần"]
+        cols = ["Môn","Môn Trùng","Phòng Học","Thứ","Tiết","Tuần"]
         list_print = mn.list_printtrung(self.list_data)
 
         for i in list_print:
@@ -39,7 +39,7 @@ class Guianalysis:
                     tree.column(i, width=330)
                 elif i == "Môn Trùng":
                     tree.column(i, width=330)
-                elif i == "Mã lớp học phần":
+                elif i == "Phòng Học":
                     tree.column(i, width=150,anchor= "center")
                 elif i == "Thứ":
                     tree.column(i, width=50,anchor= "center")

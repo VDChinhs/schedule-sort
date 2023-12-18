@@ -434,9 +434,9 @@ def list_printtrung(sche):
             if j._lec == i and j._trung != 0:
                 for z in j._trung:
                     y = [
-                        j._course_name,
-                        timlop(sche,z)._course_name,
-                        j._class_name,
+                        j._course_name + " - " + j._class_name,
+                        timlop(sche,z)._course_name + " - " + timlop(sche,z)._class_name,
+                        j._room,
                         j._day,
                         j._session,
                         j._tuantrung[z]
