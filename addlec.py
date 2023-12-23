@@ -14,7 +14,7 @@ class Addlec:
         self.root = root
         self.resettable = resettable
 
-        self.root.title('Thêm giảng viên')
+        self.root.title('Thêm cán bộ giảng dạy')
         self.root.geometry('400x130+760+475')
         self.root.iconbitmap("schedule.ico")
 
@@ -29,7 +29,7 @@ class Addlec:
         style.configure("My.TLabelframe.Label", font=("Helvetica", 13))
         style.configure("Custom.TButton", font=("Helvetica", 13))
 
-        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Giảng viên",style="My.TLabelframe")
+        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Tên cán bộ giảng dạy",style="My.TLabelframe")
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
         self.name_entry = ttk.Entry(self.widgets_frame,font=("Helvetica", 20))

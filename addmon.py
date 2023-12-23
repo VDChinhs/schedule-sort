@@ -29,7 +29,7 @@ class Addmonhoc:
         style.configure("My.TLabelframe.Label", font=("Helvetica", 13))
         style.configure("Custom.TButton", font=("Helvetica", 13))
 
-        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Môn học",style="My.TLabelframe")
+        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Tên môn học",style="My.TLabelframe")
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
         self.name_entry = ttk.Entry(self.widgets_frame,font=("Helvetica", 20))
