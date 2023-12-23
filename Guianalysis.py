@@ -8,7 +8,7 @@ class Guianalysis:
         self.list_data = list_data
 
         self.window = window
-        self.window.title('Phân tích lịch trùng')
+        self.window.title('Danh sách lịch trùng')
         self.window.geometry('+200+150')
         self.window.iconbitmap("schedule.ico")
 

@@ -338,7 +338,7 @@ def countmon(name,sche):
 
 def canchecktrung(sche):
     for i in sche:
-        if i != None:
+        if i != None and i._lec != None:
             return True
     return False
 

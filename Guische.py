@@ -20,9 +20,10 @@ class Guische:
         self.cansave = False
         self.path = os.getcwd() + "\\alpha.xlsx"
         self.list_copy = []
+        self.list_ = ""
 
         self.window = window
-        self.window.title('Lịch giảng dạy')
+        self.window.title('Hỗ trợ xếp lịch giảng dạy')
         self.window.geometry('+200+150')
         self.window.iconbitmap("schedule.ico")
     
@@ -41,12 +42,15 @@ class Guische:
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
         self.name_entry = ttk.Entry(self.widgets_frame, font=("Helvetica", 14))
-        self.name_entry.insert(0,"Alpha")
+        # self.name_entry.insert(0,"Alpha")
         # self.name_entry.bind("<FocusIn>", lambda e: self.name_entry.delete('0', 'end'))
         self.name_entry.grid(row=1,column=0,sticky='ew')
 
         # self.button1 = ttk.Button(self.widgets_frame, text="Sửa", command=self.sua, style="Custom.TButton")
         # self.button1.grid(row=2, column=0, padx=5, pady=5, sticky="nsew")
+
+        self.label1 = ttk.Label(self.widgets_frame, text="Kỳ đang chọn: ", font = ("Helvetica", 13))
+        self.label1.grid(row=2, column=0, padx=5, pady=5, sticky="nsew")
 
         self.status_combobox = ttk.Combobox(self.widgets_frame, values=ra.listsheet(), font=("Helvetica", 14),state="readonly")
         if len(ra.listsheet()) != 0:
@@ -57,10 +61,10 @@ class Guische:
         self.separator = ttk.Separator(self.widgets_frame)
         self.separator.grid(row=4, column=0, padx=(20, 10), pady=10, sticky="ew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên(Full)", command=self.xepgiangvien, style="Custom.TButton")
+        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên (Đầy đủ)", command=self.xepgiangvien, style="Custom.TButton")
         self.button1.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên(Alpha)", command=self.xepgiangvien1, style="Custom.TButton")
+        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên (Alpha)", command=self.xepgiangvien1, style="Custom.TButton")
         self.button1.grid(row=6, column=0, padx=5, pady=5, sticky="nsew")
 
         self.button1 = ttk.Button(self.widgets_frame, text="Kiểm tra lớp trùng", command=self.checkloptrung, style="Custom.TButton")
@@ -74,7 +78,7 @@ class Guische:
         self.treeScroll = ttk.Scrollbar(self.treeFrame)
         self.treeScroll.pack(side="right", fill="y")
 
-        self.cols = ["STT","Mã học phần","Tên môn học", "Mã lớp học phần", "Thứ","Tiết","Tuần","Giảng viên","Lớp ghép","Trùng lịch"]
+        self.cols = ["STT","Mã học phần","Tên môn học", "Mã lớp học phần", "Thứ","Tiết","Tuần","Cán bộ giảng dạy","Lớp ghép","Trùng lịch"]
         self.treeview = ttk.Treeview(self.treeFrame, show="headings",yscrollcommand=self.treeScroll.set, columns=self.cols, height=35)
         for i in self.cols:
             if i == "STT":
@@ -89,6 +93,8 @@ class Guische:
                 self.treeview.column(i, width=75,anchor= "center")
             elif i == "Tuần":
                 self.treeview.column(i, width=210)
+            elif i == "Cán bộ giảng dạy":
+                self.treeview.column(i, width=150,anchor="center")
             elif i == "Lớp ghép":
                 self.treeview.column(i, width=75,anchor= "center")
             elif i == "Trùng lịch":
@@ -121,23 +127,23 @@ class Guische:
 
         self.fileMenu = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
         self.menubar.add_cascade(label = "File", menu = self.fileMenu)
-        self.fileMenu.add_cascade(label = "Open",command= self.open)
-        self.fileMenu.add_cascade(label = "Edit",command= self.edit)
-        self.fileMenu.add_cascade(label = "Close",command= self.close)
+        self.fileMenu.add_cascade(label = "Mở File Excel",command= self.open)
+        # self.fileMenu.add_cascade(label = "Edit",command= self.edit)
+        self.fileMenu.add_cascade(label = "Đóng chương trình",command= self.close)
 
         self.window.bind('<Control-o>', lambda event: self.open())
 
         self.lecturerMenu = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
-        self.menubar.add_cascade(label = "Giảng viên", menu = self.lecturerMenu)
-        self.lecturerMenu.add_cascade(label = "Thông Tin", command= self.thongtin)
-        self.lecturerMenu.add_cascade(label = "Thêm Năm Học", command= self.addnamhoc)
-        self.lecturerMenu.add_cascade(label = "Thêm Giảng Viên", command= self.addgiangvien)
-        self.lecturerMenu.add_cascade(label = "Thêm Môn Học", command= self.addmonhoc)
+        self.menubar.add_cascade(label = "Cán bộ giảng dạy", menu = self.lecturerMenu)
+        self.lecturerMenu.add_cascade(label = "Xem thông tin", command= self.thongtin)
+        self.lecturerMenu.add_cascade(label = "Thêm năm học", command= self.addnamhoc)
+        self.lecturerMenu.add_cascade(label = "Thêm cán bộ giảng dạy", command= self.addgiangvien)
+        self.lecturerMenu.add_cascade(label = "Thêm môn học", command= self.addmonhoc)
 
         self.thongke = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
         self.menubar.add_cascade(label = "Phân tích thống kê", menu = self.thongke)
-        self.thongke.add_cascade(label = "Phân tích", command= self.phantich)
-        self.thongke.add_cascade(label = "Biểu đồ", command= self.bieudo)
+        self.thongke.add_cascade(label = "Danh sách lịch trùng", command= self.phantich)
+        self.thongke.add_cascade(label = "Biểu đồ khối lượng giảng dạy", command= self.bieudo)
         
 
     def close(self):
@@ -179,11 +185,11 @@ class Guische:
             messagebox.showwarning(title="Chú ý",message="Vui lòng thêm năm học")
             return
         if len(self.colfirst()) == 0 and len(self.rowfirst()) == 0:
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên và môn học")
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin cán bộ giảng dạy vui lòng thêm cán bộ giảng dạy và môn học")
         elif len(self.colfirst()) == 0 :
             messagebox.showwarning(title="Chú ý",message="Không có thông tin môn học vui lòng thêm môn học")
         elif len(self.rowfirst()) == 0 :
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên")
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin cán bộ giảng dạy vui lòng thêm cán bộ giảng dạy")
         else:
             Guilec.Guigiangvien(Tk(),selected_table,Guische,self.updatecombo)
 
@@ -229,7 +235,7 @@ class Guische:
             if len(mn.ds_giangvien_trung(self.list_)) != 0:
                 Guianalysis.Guianalysis(Tk(),self.list_)
             else:
-                messagebox.showwarning(title="Chú ý",message="Không có giảng viên nào bị trùng lịch")
+                messagebox.showwarning(title="Chú ý",message="Không có cán bộ giảng dạy nào bị trùng lịch")
                 return
         else:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
@@ -292,7 +298,7 @@ class Guische:
         except:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
             return
-        messagebox.showinfo(title="Thông báo",message="Xếp giảng viên xong")
+        messagebox.showinfo(title="Thông báo",message="Xếp cán bộ giảng dạy xong")
 
     # Xếp giảng viên ưu tiên xếp theo alpha
     def xepgiangvien1(self):
@@ -316,7 +322,7 @@ class Guische:
         except:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
             return
-        messagebox.showinfo(title="Thông báo",message="Xếp giảng viên xong")
+        messagebox.showinfo(title="Thông báo",message="Xếp cán bộ giảng dạy xong")
 
     def checkloptrung(self):
         if mn.canchecktrung(self.list_):
@@ -324,7 +330,7 @@ class Guische:
             mn.checktrung(self.list_)
             self.load_data(self.list_)
         else:
-           messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm lịch dạy") 
+           messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy hoặc chưa xếp cán bộ giảng dạy vui lòng thêm thông tin") 
            return
         messagebox.showinfo(title="Thông báo",message="Kiểm tra trùng lịch xong")
         

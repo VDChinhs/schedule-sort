@@ -21,8 +21,8 @@ class Guigiangvien:
 
         self.path = os.getcwd() + "\\alpha.xlsx"
 
-        self.window.title('Lịch giảng dạy')
-        self.window.geometry('+0+0')
+        self.window.title('Thông tin cán bộ giảng dạy')
+        self.window.geometry('+10+10')
         self.window.iconbitmap("schedule.ico")
 
         self.frame = ttk.Frame(self.window)
@@ -38,7 +38,7 @@ class Guigiangvien:
         self.style.configure("My.TLabelframe.Label", font=("Helvetica", 13))
         self.style.configure("My.TButton", font=("Helvetica", 13))
 
-        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Thông tin giảng viên", style="My.TLabelframe")
+        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Thông tin cán bộ giảng dạy", style="My.TLabelframe")
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
         self.status_combobox = ttk.Combobox(self.widgets_frame, values=self.rowfirst(self.sheetsl)[1:], font=("Helvetica", 14))
@@ -49,31 +49,34 @@ class Guigiangvien:
         self.status_combobox1.current(0)
         self.status_combobox1.grid(row=1, column=0, padx=5, pady=5,  sticky="ew")
 
+        self.label1 = ttk.Label(self.widgets_frame, text="Kỳ đang chọn: ", font = ("Helvetica", 13))
+        self.label1.grid(row=2, column=0, padx=5, pady=5, sticky="nsew")
+
         self.status_combobox2 = ttk.Combobox(self.widgets_frame, values=ra.listsheet(), font=("Helvetica", 14),state="readonly")
         # self.status_combobox2.current(0)
         self.status_combobox2.set(self.sheetsl)
-        self.status_combobox2.grid(row=2, column=0, padx=5, pady=5,  sticky="ew")
+        self.status_combobox2.grid(row=3, column=0, padx=5, pady=5,  sticky="ew")
         self.status_combobox2.bind("<<ComboboxSelected>>", self.switch_table)
 
         self.name_entry = ttk.Entry(self.widgets_frame, font=("Helvetica", 14))
         self.name_entry.insert(0,"Alpha")
         self.name_entry.bind("<FocusIn>", lambda e: self.name_entry.delete('0', 'end'))
-        self.name_entry.grid(row=3,column=0,sticky='ew')
+        self.name_entry.grid(row=4,column=0,sticky='ew')
 
         self.button1 = ttk.Button(self.widgets_frame, text="Sửa", command=self.sua, style="My.TButton")
-        self.button1.grid(row=4, column=0, padx=5, pady=5, sticky="nsew")
-
-        self.button1 = ttk.Button(self.widgets_frame, text="Xóa", command=self.xoa, style="My.TButton")
         self.button1.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
 
+        self.button1 = ttk.Button(self.widgets_frame, text="Xóa", command=self.xoa, style="My.TButton")
+        self.button1.grid(row=6, column=0, padx=5, pady=5, sticky="nsew")
+
         self.separator = ttk.Separator(self.widgets_frame)
-        self.separator.grid(row=6, column=0, padx=(20, 10), pady=10, sticky="ew")
+        self.separator.grid(row=7, column=0, padx=(20, 10), pady=10, sticky="ew")
 
         self.button1 = ttk.Button(self.widgets_frame, text="Kiểm tra", command=self.kiemtra, style="My.TButton")
-        self.button1.grid(row=7, column=0, padx=5, pady=5, sticky="nsew")
+        self.button1.grid(row=8, column=0, padx=5, pady=5, sticky="nsew")
 
         self.button1 = ttk.Button(self.widgets_frame, text="Import Alpha", command=self.importalpha, style="My.TButton")
-        self.button1.grid(row=8, column=0, padx=5, pady=5, sticky="nsew")
+        self.button1.grid(row=9, column=0, padx=5, pady=5, sticky="nsew")
 
         # Khung thu 2
         self.creattable(self.sheetsl,self.rowfirst(self.sheetsl))
@@ -83,11 +86,11 @@ class Guigiangvien:
         self.window.config(menu = self.menubar)
 
         self.lecturerMenu = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
-        self.menubar.add_cascade(label = "Giảng viên", menu = self.lecturerMenu)
-        self.lecturerMenu.add_cascade(label = "Thông Tin", command= self.thongtin)
-        self.lecturerMenu.add_cascade(label = "Thêm Năm Học", command= self.addnamhoc)
-        self.lecturerMenu.add_cascade(label = "Thêm Giảng Viên", command= self.addgiangvien)
-        self.lecturerMenu.add_cascade(label = "Thêm Môn Học", command= self.addmonhoc)
+        self.menubar.add_cascade(label = "Cán bộ giảng dạy", menu = self.lecturerMenu)
+        self.lecturerMenu.add_cascade(label = "Xem thông tin", command= self.thongtin)
+        self.lecturerMenu.add_cascade(label = "Thêm năm học", command= self.addnamhoc)
+        self.lecturerMenu.add_cascade(label = "Thêm cán bộ giảng dạy", command= self.addgiangvien)
+        self.lecturerMenu.add_cascade(label = "Thêm môn học", command= self.addmonhoc)
 
     def open():
         print("open file")
@@ -295,7 +298,7 @@ class Guigiangvien:
             if i == "Môn":
                 self.treeview.column(i, width=330)
             else:
-                self.treeview.column(i, width=100,anchor= "center")
+                self.treeview.column(i, width=120,anchor= "center")
 
         self.treeScroll.config(command=self.treeview.yview)
         # style = ttk.Style()
