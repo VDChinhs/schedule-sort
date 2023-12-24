@@ -181,7 +181,7 @@ class Guigiangvien:
         selected_table = self.status_combobox2.get()
         name = self.name_entry.get()
         if name == "":
-            return messagebox.showerror(title = "Lỗi",message = "Nhập tên giảng viên hoặc tên môn để xóa",parent = self.window)
+            return messagebox.showerror(title = "Lỗi",message = "Nhập tên cán bộ giảng dạy hoặc tên môn để xóa",parent = self.window)
         workbook = openpyxl.load_workbook(self.path)
         sheet = workbook[selected_table]
         for i in range(1,sheet.max_column + 1):
@@ -342,11 +342,11 @@ class Guigiangvien:
         selected_table = self.status_combobox2.get()
         listsheet = ra.listsheet()
         if len(self.socot()) == 0 and len(self.sohang()) == 0:
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên và môn học",parent = self.window)
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin cán bộ giảng dạy vui lòng thêm cán bộ giảng dạy và môn học",parent = self.window)
         elif len(self.socot()) == 0 :
             messagebox.showwarning(title="Chú ý",message="Không có thông tin môn học vui lòng thêm môn học",parent = self.window)
         elif len(self.sohang()) == 0 :
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên",parent = self.window)
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin cán bộ giảng dạy vui lòng thêm cán bộ giảng dạy",parent = self.window)
         else:
             for i in listsheet:
                 if selected_table == i:
@@ -362,11 +362,11 @@ class Guigiangvien:
         selected_table = self.status_combobox2.get()
         listsheet = ra.listsheet()
         if len(self.socot()) == 0 and len(self.sohang()) == 0:
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên và môn học",parent = self.window)
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin cán bộ giảng dạy vui lòng thêm cán bộ giảng dạy và môn học",parent = self.window)
         elif len(self.socot()) == 0 :
             messagebox.showwarning(title="Chú ý",message="Không có thông tin môn học vui lòng thêm môn học",parent = self.window)
         elif len(self.sohang()) == 0 :
-            messagebox.showwarning(title="Chú ý",message="Không có thông tin giảng viên vui lòng thêm giảng viên",parent = self.window)
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin cán bộ giảng dạy vui lòng thêm cán bộ giảng dạy",parent = self.window)
         else:
             for i in listsheet:
                 if selected_table == i:
