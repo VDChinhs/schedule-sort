@@ -62,7 +62,7 @@ class Addlec:
         else:
             for i in row[0]:
                 if i.strip() == name.strip():
-                    messagebox.showerror(title="Lỗi",message="Giảng viên đã tồn tại",parent = self.root)
+                    messagebox.showerror(title="Lỗi",message="Cán bộ giảng dạy đã tồn tại",parent = self.root)
                     return
                 else:
                      sheet.cell(column = len(row[0]) + 1, row = 1,value = name)               

@@ -63,10 +63,10 @@ class Guigiangvien:
         self.name_entry.bind("<FocusIn>", lambda e: self.name_entry.delete('0', 'end'))
         self.name_entry.grid(row=4,column=0,sticky='ew')
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Sửa", command=self.sua, style="My.TButton")
+        self.button1 = ttk.Button(self.widgets_frame, text="Sửa trọng số Alpha", command=self.sua, style="My.TButton")
         self.button1.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Xóa", command=self.xoa, style="My.TButton")
+        self.button1 = ttk.Button(self.widgets_frame, text="Xóa (Môn/Cán bộ giảng dạy)", command=self.xoa, style="My.TButton")
         self.button1.grid(row=6, column=0, padx=5, pady=5, sticky="nsew")
 
         self.separator = ttk.Separator(self.widgets_frame)
@@ -88,7 +88,7 @@ class Guigiangvien:
         self.lecturerMenu = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
         self.menubar.add_cascade(label = "Cán bộ giảng dạy", menu = self.lecturerMenu)
         self.lecturerMenu.add_cascade(label = "Xem thông tin", command= self.thongtin)
-        self.lecturerMenu.add_cascade(label = "Thêm năm học", command= self.addnamhoc)
+        self.lecturerMenu.add_cascade(label = "Thêm kỳ học", command= self.addnamhoc)
         self.lecturerMenu.add_cascade(label = "Thêm cán bộ giảng dạy", command= self.addgiangvien)
         self.lecturerMenu.add_cascade(label = "Thêm môn học", command= self.addmonhoc)
 
@@ -229,18 +229,22 @@ class Guigiangvien:
         list_course = []
 
         if self.file_path:
+            try:
+                if os.path.splitext(self.file_path)[1] == ".xlsx":
+                    self.list_ = mn.readfile(self.file_path, readlec = True) 
+                    
+                if os.path.splitext(self.file_path)[1] == ".xls":
+                    self.list_ = mn.readfilexls(self.file_path, readlec = True)
+            except:
+                messagebox.showwarning(title="Chú ý",message="File Excel không đúng định dạng",parent = self.window)
+                return
+            
             if len(ra.ds(self.path,self.status_combobox2.get())) > 1:
                 answer = messagebox.askyesno(title="Gợi ý",message="Bạn có muốn tạo kỳ mới không. Nếu không sẽ thay thế dữ liệu kỳ hiện tại",parent = self.window)
             else:
                 answer = False
             
             self.treeview.delete(*self.treeview.get_children())
-
-            if os.path.splitext(self.file_path)[1] == ".xlsx":
-                self.list_ = mn.readfile(self.file_path, readlec = True) 
-                
-            if os.path.splitext(self.file_path)[1] == ".xls":
-                self.list_ = mn.readfilexls(self.file_path, readlec = True)
 
             for i in self.list_:
                 if len(i._lec) < 25:
@@ -283,7 +287,7 @@ class Guigiangvien:
 
         self.updatecombo()
         self.schecombo()
-
+        self.status_combobox2.set(enter)
         self.reserttable()
 
     # Tạo bảng với dữ liệu và tiêu đề

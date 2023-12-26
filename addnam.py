@@ -16,7 +16,7 @@ class Addnam:
         self.schecombo = schecombo
         self.getdata = getdata
 
-        self.root.title('Thêm năm học')
+        self.root.title('Thêm kỳ học')
         self.root.geometry('400x130+760+475')
         self.root.iconbitmap("schedule.ico")
 
@@ -27,7 +27,7 @@ class Addnam:
         style.configure("My.TLabelframe.Label", font=("Helvetica", 13))
         style.configure("Custom.TButton", font=("Helvetica", 13))
 
-        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Tên năm học",style="My.TLabelframe")
+        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Tên kỳ học",style="My.TLabelframe")
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
         self.name_entry = ttk.Entry(self.widgets_frame,font=("Helvetica", 20))
@@ -70,7 +70,7 @@ class Addnam:
             else:
                 for i in ra.listsheet():
                     if i.lower().strip() == name.lower().strip():
-                        messagebox.showerror(title="Lỗi",message="Năm học đã tồn tại",parent = self.root)
+                        messagebox.showerror(title="Lỗi",message="Kỳ học đã tồn tại",parent = self.root)
                         return
                     
                 workbook = openpyxl.load_workbook(self.path)

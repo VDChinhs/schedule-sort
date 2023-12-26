@@ -61,13 +61,13 @@ class Guische:
         self.separator = ttk.Separator(self.widgets_frame)
         self.separator.grid(row=4, column=0, padx=(20, 10), pady=10, sticky="ew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên (Đầy đủ)", command=self.xepgiangvien, style="Custom.TButton")
+        self.button1 = ttk.Button(self.widgets_frame, text="Sắp xếp cán bộ giảng dạy (Đầy đủ)", command=self.xepgiangvien, style="Custom.TButton")
         self.button1.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Xếp giảng viên (Alpha)", command=self.xepgiangvien1, style="Custom.TButton")
+        self.button1 = ttk.Button(self.widgets_frame, text="Sắp xếp cán bộ giảng dạy (Alpha)", command=self.xepgiangvien1, style="Custom.TButton")
         self.button1.grid(row=6, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.button1 = ttk.Button(self.widgets_frame, text="Kiểm tra lớp trùng", command=self.checkloptrung, style="Custom.TButton")
+        self.button1 = ttk.Button(self.widgets_frame, text="Kiểm tra lịch trùng", command=self.checkloptrung, style="Custom.TButton")
         self.button1.grid(row=7, column=0, padx=5, pady=5, sticky="nsew")
 
         self.button1 = ttk.Button(self.widgets_frame, text="Xuất File Excel", command=self.save, style="Custom.TButton")
@@ -136,7 +136,7 @@ class Guische:
         self.lecturerMenu = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
         self.menubar.add_cascade(label = "Cán bộ giảng dạy", menu = self.lecturerMenu)
         self.lecturerMenu.add_cascade(label = "Xem thông tin", command= self.thongtin)
-        self.lecturerMenu.add_cascade(label = "Thêm năm học", command= self.addnamhoc)
+        self.lecturerMenu.add_cascade(label = "Thêm kỳ học", command= self.addnamhoc)
         self.lecturerMenu.add_cascade(label = "Thêm cán bộ giảng dạy", command= self.addgiangvien)
         self.lecturerMenu.add_cascade(label = "Thêm môn học", command= self.addmonhoc)
 
@@ -144,7 +144,9 @@ class Guische:
         self.menubar.add_cascade(label = "Phân tích thống kê", menu = self.thongke)
         self.thongke.add_cascade(label = "Danh sách lịch trùng", command= self.phantich)
         self.thongke.add_cascade(label = "Biểu đồ khối lượng giảng dạy", command= self.bieudo)
-        
+
+        self.taolich = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
+        self.menubar.add_cascade(label = "Tạo lịch Google Calendar",command=self.taolichgg)
 
     def close(self):
         self.window.quit()
@@ -155,11 +157,15 @@ class Guische:
             print("Thư mục được chọn:", self.file_path)
             self.treeview.delete(*self.treeview.get_children())
 
-            if os.path.splitext(self.file_path)[1] == ".xlsx":
-                self.list_ = mn.readfile(self.file_path, readlec = True) 
-                
-            if os.path.splitext(self.file_path)[1] == ".xls":
-                self.list_ = mn.readfilexls(self.file_path, readlec = True)
+            try:
+                if os.path.splitext(self.file_path)[1] == ".xlsx":
+                    self.list_ = mn.readfile(self.file_path, readlec = True) 
+                    
+                if os.path.splitext(self.file_path)[1] == ".xls":
+                    self.list_ = mn.readfilexls(self.file_path, readlec = True)
+            except:
+                messagebox.showwarning(title="Chú ý",message="File Excel không đúng định dạng")
+                return
 
             for i in self.list_:
                 self.list_copy.append(i)
@@ -178,11 +184,11 @@ class Guische:
         selected_table = self.status_combobox.get()
 
         if selected_table == "":
-            messagebox.showwarning(title="Chú ý",message="Vui chọn năm học")
+            messagebox.showwarning(title="Chú ý",message="Vui chọn kỳ học")
             return
         
         if not os.path.exists(self.path):
-            messagebox.showwarning(title="Chú ý",message="Vui lòng thêm năm học")
+            messagebox.showwarning(title="Chú ý",message="Vui lòng thêm kỳ học")
             return
         if len(self.colfirst()) == 0 and len(self.rowfirst()) == 0:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin cán bộ giảng dạy vui lòng thêm cán bộ giảng dạy và môn học")
@@ -206,7 +212,7 @@ class Guische:
 
     def addgiangvien(self):
         if self.status_combobox.get() == "":
-            messagebox.showwarning(title="Chú ý",message="Vui chọn năm học")
+            messagebox.showwarning(title="Chú ý",message="Vui chọn kỳ học")
             return
         
         if os.path.exists(self.path):
@@ -214,11 +220,11 @@ class Guische:
             root = Tk()
             addlec.Addlec(root,self.window,Guische,selected_table)
         else:
-            messagebox.showwarning(title="Chú ý",message="Vui lòng thêm năm học")
+            messagebox.showwarning(title="Chú ý",message="Vui lòng thêm kỳ học")
 
     def addmonhoc(self):
         if self.status_combobox.get() == "":
-            messagebox.showwarning(title="Chú ý",message="Vui chọn năm học")
+            messagebox.showwarning(title="Chú ý",message="Vui chọn kỳ học")
             return
         
         if os.path.exists(self.path):
@@ -226,7 +232,7 @@ class Guische:
             root = Tk()
             addmon.Addmonhoc(root,self.window,Guische,selected_table)
         else:
-            messagebox.showwarning(title="Chú ý",message="Vui lòng thêm năm học")
+            messagebox.showwarning(title="Chú ý",message="Vui lòng thêm kỳ học")
     def sua(self):
         pass
 
@@ -262,10 +268,13 @@ class Guische:
 
             explode = [0.1,0,0,0]
             plt.title("Biểu đồ khối lượng dạy của các giảng viên")
-            plt.pie(y,labels=labels, autopct='%1.1f%%', wedgeprops={'edgecolor': 'white', 'linewidth': 1.5})
+            plt.pie(y, labels=labels, autopct='%1.1f%%', wedgeprops={'edgecolor': 'white', 'linewidth': 1.5})
             plt.show()
         else:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
+
+    def taolichgg(self):
+        print("Tạo lịch")
 
     def creatfile():
         file_path = os.getcwd() + "\\alpha.xlsx"
@@ -280,7 +289,7 @@ class Guische:
     def xepgiangvien(self):
         selected_table = self.status_combobox.get()
         if selected_table == "":
-            messagebox.showwarning(title="Chú ý",message="Vui lòng chọn năm học")
+            messagebox.showwarning(title="Chú ý",message="Vui lòng chọn kỳ học")
             return
         try:
             self.treeview.delete(*self.treeview.get_children())
@@ -298,13 +307,13 @@ class Guische:
         except:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
             return
-        messagebox.showinfo(title="Thông báo",message="Xếp cán bộ giảng dạy xong")
+        messagebox.showinfo(title="Thông báo",message="Sắp xếp cán bộ giảng dạy xong")
 
     # Xếp giảng viên ưu tiên xếp theo alpha
     def xepgiangvien1(self):
         selected_table = self.status_combobox.get()
         if selected_table == "":
-            messagebox.showwarning(title="Chú ý",message="Vui lòng chọn năm học")
+            messagebox.showwarning(title="Chú ý",message="Vui lòng chọn kỳ học")
             return
         try:
             self.treeview.delete(*self.treeview.get_children())
@@ -322,7 +331,7 @@ class Guische:
         except:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
             return
-        messagebox.showinfo(title="Thông báo",message="Xếp cán bộ giảng dạy xong")
+        messagebox.showinfo(title="Thông báo",message="Sắp xếp cán bộ giảng dạy xong")
 
     def checkloptrung(self):
         if mn.canchecktrung(self.list_):
