@@ -64,6 +64,14 @@ namespace eval ttk::theme::forest-light {
                 } 
             }
         }
+        ttk::style layout TCheckbutton {
+            Checkbutton.button -children {
+                Checkbutton.padding -children {
+                    Checkbutton.indicator -side left
+                    Checkbutton.label -side right -expand true
+                }
+            }
+        }
         ttk::style layout TCombobox {
             Combobox.field -sticky nswe -children {
                 Combobox.padding -expand true -sticky nswe -children {
@@ -104,6 +112,24 @@ namespace eval ttk::theme::forest-light {
                 active $I(rect-hover) \
             ] -border 4 -sticky nsew
 
+        # Checkbutton
+        ttk::style configure TCheckbutton -padding 4
+
+        ttk::style element create Checkbutton.indicator image \
+            [list $I(check-unsel-accent) \
+                {alternate disabled} $I(check-tri-basic) \
+                {selected disabled} $I(check-basic) \
+                disabled $I(check-unsel-basic) \
+                {pressed alternate} $I(check-tri-hover) \
+                {active alternate} $I(check-tri-hover) \
+                alternate $I(check-tri-accent) \
+                {pressed selected} $I(check-hover) \
+                {active selected} $I(check-hover) \
+                selected $I(check-accent) \
+                {pressed !selected} $I(check-unsel-pressed) \
+                active $I(check-unsel-hover) \
+            ] -width 26 -sticky w
+            
         # Scrollbar
         ttk::style element create Horizontal.Scrollbar.trough image $I(hor-basic) \
             -sticky ew

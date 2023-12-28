@@ -3,6 +3,7 @@ import xlrd
 import lichhoc
 import readalpha as ra
 import math
+from datetime import datetime, timedelta
 
 list_ = []
 listtest = []
@@ -584,8 +585,10 @@ def readfilexls(path, readlec = False):
                         credit = sheet.cell_value(i, j)
                     case "Bắt đầu":
                         start = sheet.cell_value(i, j)
+                        start = datetime(1900, 1, 1) + timedelta(days=start)
                     case "Kết thúc":
                         end = sheet.cell_value(i, j)
+                        end = datetime(1900, 1, 1) + timedelta(days=end)
                     case "12345678901234567":
                         week = sheet.cell_value(i, j)
                     case "1234567890123456789":
