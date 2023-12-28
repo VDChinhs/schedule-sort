@@ -22,7 +22,7 @@ class GoogleCalendar:
         
         self.window = window
         window.title("Google Calendar")
-        self.window.geometry("400x300")
+        self.window.geometry("400x300+150+100")
 
         self.style = ttk.Style(self.window)
 
@@ -58,7 +58,7 @@ class GoogleCalendar:
 
         self.fileMenu = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
         self.menubar.add_cascade(label = "File", menu = self.fileMenu)
-        self.fileMenu.add_cascade(label = "Load sorted Schedule")
+        self.fileMenu.add_cascade(label = "Cập nhật lịch đã sắp xếp",command=self.updateSche)
         self.fileMenu.add_cascade(label = "Open File Excel",command= self.open)
 
         self.menuacc = Menu(self.menubar, tearoff = 0,font = ("Helvetica",13))
@@ -68,7 +68,17 @@ class GoogleCalendar:
 
         self.solich = len(CalendarFunc.get_calendar_id())
 
-        firstMon = mn.startday(self.list_)
+        firstMon = mn.get_first_monday(self.list_)
+        lecNameList = lecturer.getLecNameList(self.list_)
+        lecList = lecturer.lecCre(lecNameList)
+        lecturer.scheAdd(lecList, self.list_)
+        commonVar.Set_fullSche(com.common, self.list_)
+        commonVar.Set_lecNameList(com.common, lecNameList)
+        commonVar.Set_lecList(com.common, lecList)
+        commonVar.Set_firstMon(com.common, firstMon)
+
+    def updateSche(self):
+        firstMon = mn.get_first_monday(self.list_)
         lecNameList = lecturer.getLecNameList(self.list_)
         lecList = lecturer.lecCre(lecNameList)
         lecturer.scheAdd(lecList, self.list_)

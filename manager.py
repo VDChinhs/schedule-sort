@@ -313,7 +313,7 @@ def check2lich(sche):
                 for i in ds:
                     i._2lich = count
 
-# Tìm ngày bắt đầu năm học
+# Tìm ngày bắt đầu năm học 
 def startday(sche):
     day = sche[0]._start
     for i in sche:
@@ -321,6 +321,20 @@ def startday(sche):
             day = i._start
     return day
 
+# Lấy thứ 2 đầu tiên trong tuần bắt đầu năm học
+def get_first_monday(sche):
+    date = sche[0]._start
+    min_index = sche[0]
+    for i in sche:
+        if date > i._start:
+            date = i._start
+            min_index = i
+    if min_index._day == 2:
+        return date
+    else:
+        date = date - timedelta(days= int(min_index._day) - 2) 
+        return date
+    
 # Tìm ngày kết thúc năm học
 def endday(sche):
     day = sche[0]._end
