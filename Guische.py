@@ -12,6 +12,7 @@ import os
 import readalpha as ra
 import matplotlib.pyplot as plt
 import numpy as np
+import GoogleCalendar.main as ggcal
 
 #GUI hiện thị lịch
 class Guische:
@@ -274,7 +275,11 @@ class Guische:
             messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
 
     def taolichgg(self):
-        print("Tạo lịch")
+        if self.cansave:
+            root = tk.Toplevel(self.window)
+            ggcal.GoogleCalendar(root,self.list_)
+        else:
+            messagebox.showwarning(title="Chú ý",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy")
 
     def creatfile():
         file_path = os.getcwd() + "\\alpha.xlsx"
