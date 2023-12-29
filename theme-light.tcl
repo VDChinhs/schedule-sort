@@ -173,7 +173,20 @@ namespace eval ttk::theme::forest-light {
                 selected $I(tab-accent) \
                 active $I(tab-hover) \
             ] -border 5 -padding {14 4}
-            
+
+        # Progressbar
+        ttk::style element create Horizontal.Progressbar.trough image $I(hor-basic) \
+            -sticky ew
+
+        ttk::style element create Horizontal.Progressbar.pbar image $I(hor-accent) \
+            -sticky ew
+
+        ttk::style element create Vertical.Progressbar.trough image $I(vert-basic) \
+            -sticky ns
+
+        ttk::style element create Vertical.Progressbar.pbar image $I(vert-accent) \
+            -sticky ns
+
         # Combobox
         ttk::style map TCombobox -selectbackground [list \
             {!focus} $colors(-selectbg) \

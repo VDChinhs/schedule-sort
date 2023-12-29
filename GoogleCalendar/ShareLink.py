@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import *
-from tkinter import ttk, messagebox, filedialog, Menu, Tk, Toplevel, Label, simpledialog
+from tkinter import ttk, messagebox,simpledialog
 from GoogleCalendar.CalendarFunc import CalendarFunc
 
 class GuiShareCal:
     
-    def __init__(self, root):
+    def __init__(self, root: Tk):
         
         self.root = root
 

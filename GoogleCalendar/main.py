@@ -1,7 +1,6 @@
 import os
-import json
 import tkinter as tk
-from tkinter import ttk,messagebox,filedialog,Menu,Tk, Toplevel
+from tkinter import ttk,messagebox,filedialog,Menu,Tk
 import manager as mn
 from GoogleCalendar.lecturer import lecturer
 from GoogleCalendar.commonVar import commonVar
@@ -13,7 +12,7 @@ from GoogleCalendar.addEvent import GuiAddEvent
 from GoogleCalendar.ShareLink import GuiShareCal
 
 class GoogleCalendar:
-    def __init__(self, window, calendar_list):
+    def __init__(self, window: Tk, calendar_list):
 
         self.fullSche = None
         self.lecNameList = None

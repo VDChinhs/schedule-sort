@@ -1,14 +1,15 @@
 import tkinter as tk
 from tkinter import *
-from tkinter import ttk, messagebox, filedialog, Menu, Tk, Toplevel, Label, simpledialog
+from tkinter import ttk, messagebox
 from GoogleCalendar.CalendarFunc import CalendarFunc
 from GoogleCalendar.commonVar import commonVar
 import GoogleCalendar.commonVar as com
 from GoogleCalendar.lecturer import lecturer
+from concurrent.futures import ThreadPoolExecutor
 
 class GuiAddEvent:
     
-    def __init__(self, root):
+    def __init__(self, root: Tk):
         
         self.root = root
         self.IDDICT = CalendarFunc.get_calendar_id()
@@ -26,7 +27,7 @@ class GuiAddEvent:
         style.configure("TCheckbutton", font=("Helvetica", 13))
         style.configure("Custom.TButton", font=("Helvetica", 13))
 
-        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Cán bộ giảng dạy",style="My.TLabelframe")
+        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Cán bộ giảng dạy                    ",style="My.TLabelframe")
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
 
         self.select_all_var = tk.IntVar()
@@ -38,9 +39,15 @@ class GuiAddEvent:
             self.checkbox = ttk.Checkbutton(self.widgets_frame, text=lec, variable= var)
             self.checkbox.pack(anchor=tk.W)
             self.checkbox_vars.append(var)
+
+        self.progress_var = tk.DoubleVar()
+        self.progress_bar = ttk.Progressbar(self.widgets_frame, variable=self.progress_var, maximum=100,length=200)
+        self.progress_bar.pack()
             
-        self.show_button = ttk.Button(self.widgets_frame, text="Thêm sự kiện", command=self.addEvent, style="Custom.TButton")
-        self.show_button.pack(pady=10)     
+        self.show_button = ttk.Button(self.widgets_frame, text="Thêm sự kiện", command=self.start_processing, style="Custom.TButton")
+        self.show_button.pack(pady=10)  
+
+        self.executor = ThreadPoolExecutor(max_workers=4)    
             
     def toggle_select_all(self):
         select_all_state = self.select_all_var.get()
@@ -49,6 +56,8 @@ class GuiAddEvent:
                    
     def addEvent(self):
         selected_lec = [lec for lec, var in zip(self.lecNameList, self.checkbox_vars) if var.get() == 1]
+        index = 0
+        totals = 0
         if len(selected_lec) > 0:
             IDDict = self.IDDICT
             lecList = commonVar.get_lecList(com.common)
@@ -58,6 +67,17 @@ class GuiAddEvent:
                 for lec in lecList:
                     if lec.Name == lecName:
                         addList.append(lec)
+
+            for i in range (len(addList)):
+                totalElement = len(addList[i].Schedule)
+                for j in range(totalElement):
+                    tempData = lecturer.getEventData(i, j, addList)
+                    
+                    eData = list(tempData)
+                    tmpStages = CalendarFunc.getStages(int(eData[2]), eData[3], firstMon)
+                    stages = [element for row in tmpStages for element in row]
+                    for k in range(0, len(stages), 2):
+                        totals = totals + 1
             
             for i in range (len(addList)):
                 totalElement = len(addList[i].Schedule)
@@ -75,8 +95,17 @@ class GuiAddEvent:
                         e_date_str = date_obj1.strftime("%Y%m%d")
                         eData[5] = s_date_str
                         eData[6] = e_date_str
-                        ev = CalendarFunc.eventCreate(*eData)   
-                                
+                        ev = CalendarFunc.eventCreate(*eData)
+
+                        index = index + 1
+                        process = (index / totals) * 100
+                        self.progress_var.set(process)  
+                        self.root.update_idletasks()   
+            
+            messagebox.showwarning(title="Thông báo",message="Thêm sự kiện thành công",parent = self.root)                    
             self.root.destroy()
         else:
             messagebox.showwarning(title="Chú ý",message="Vui lòng chọn cán bộ giảng dạy",parent = self.root)
+
+    def start_processing(self):
+        self.executor.submit(self.addEvent)

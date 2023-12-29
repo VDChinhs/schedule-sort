@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import *
-from tkinter import ttk, messagebox,Tk, Toplevel, Label, simpledialog
+from tkinter import ttk, messagebox
 from GoogleCalendar.CalendarFunc import CalendarFunc
+from concurrent.futures import ThreadPoolExecutor
 
 class GuiRemoveCalendar:
     
-    def __init__(self, root):
+    def __init__(self, root: Tk):
 
         self.id_list = {}
         self.lecNameList = []
@@ -27,7 +28,7 @@ class GuiRemoveCalendar:
             self.lecNameList.append(calendar_list_entry['summary'])
             self.id_list.update({calendar_list_entry['summary']:calendar_list_entry['id']})
 
-        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Cán bộ giảng dạy",style="My.TLabelframe")
+        self.widgets_frame = ttk.LabelFrame(self.frame, text= "Cán bộ giảng dạy                    ",style="My.TLabelframe")
         self.widgets_frame.grid(row=0,column=0, padx=20, pady=10)
             
         self.checkbox_vars = []
@@ -40,9 +41,15 @@ class GuiRemoveCalendar:
             self.checkbox = ttk.Checkbutton(self.widgets_frame, text=lec, variable= var)
             self.checkbox.pack(anchor=tk.W)
             self.checkbox_vars.append(var)
+
+        self.progress_var = tk.DoubleVar()
+        self.progress_bar = ttk.Progressbar(self.widgets_frame, variable=self.progress_var, maximum=100,length=200)
+        self.progress_bar.pack()
             
-        self.show_button = ttk.Button(self.widgets_frame, text="Xóa lịch", command=self.remove, style="Custom.TButton")
+        self.show_button = ttk.Button(self.widgets_frame, text="Xóa lịch", command=self.start_processing, style="Custom.TButton")
         self.show_button.pack(pady=10)   
+
+        self.executor = ThreadPoolExecutor(max_workers=4) 
 
     def toggle_select_all(self):
         select_all_state = self.select_all_var.get()
@@ -60,6 +67,7 @@ class GuiRemoveCalendar:
     
     def remove(self):
         selected_lec = [lec for lec, var in zip(self.lecNameList, self.checkbox_vars) if var.get() == 1]
+        index = 0
         if len(selected_lec) > 0:
             IDDict = self.id_list
             confirm = messagebox.askokcancel("Xác nhận", f"Xác nhận xóa lịch của: {selected_lec}",parent = self.root)
@@ -72,6 +80,12 @@ class GuiRemoveCalendar:
                         removedID = CalendarFunc.calendarRemove(ID)
                         removedCale = GuiRemoveCalendar.getKey(IDDict, removedID)
                         removedList.append(removedCale)
+
+                        index = index + 1
+                        process = (index / len(IDList)) * 100
+                        self.progress_var.set(process)  
+                        self.root.update_idletasks()
+
                     messagebox.showinfo("Xóa thành công", f"Danh sách xóa: {removedList}",parent = self.root)
                     self.root.destroy()      
                 else:
@@ -80,3 +94,6 @@ class GuiRemoveCalendar:
                 return
         else:
             messagebox.showwarning(title="Chú ý",message="Vui lòng chọn cán bộ giảng dạy",parent = self.root)
+
+    def start_processing(self):
+        self.executor.submit(self.remove)
