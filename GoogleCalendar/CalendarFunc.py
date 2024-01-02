@@ -218,3 +218,8 @@ class CalendarFunc:
         for calendar_list_entry in calendar_list['items']:
             id_dict.update({calendar_list_entry['summary']:calendar_list_entry['id']})
         return id_dict       
+    
+    def checklogin():
+        if os.path.exists('Cred/token.json'):
+            return True
+        return False

@@ -65,7 +65,10 @@ class GoogleCalendar:
         self.menuacc.add_cascade(label = "Đăng nhập",command= self.login)
         self.menuacc.add_cascade(label = "Đăng xuất",command= self.logout)
 
-        self.solich = len(CalendarFunc.get_calendar_id())
+        if CalendarFunc.checklogin():
+            self.solich = len(CalendarFunc.get_calendar_id())
+        else:
+            self.solich = 0
 
         firstMon = mn.get_first_monday(self.list_)
         lecNameList = lecturer.getLecNameList(self.list_)
@@ -117,9 +120,14 @@ class GoogleCalendar:
     def login(self):
         creds = CalendarFunc.credsCheck()
         if creds:
+            self.solich = len(CalendarFunc.get_calendar_id())
             messagebox.showinfo("Thông báo", "Đã đăng nhập!",parent = self.window)
 
     def logout(self):
+        if not CalendarFunc.checklogin():
+            messagebox.showinfo("Thông báo","Chưa đăng nhập",parent = self.window)
+            return
+        
         result = messagebox.askokcancel("Đăng xuất", "Bạn có muốn đăng xuất?",parent = self.window)
         if result:
             credRemove = CalendarFunc.credRemove()
@@ -129,6 +137,9 @@ class GoogleCalendar:
                 messagebox.showinfo("Thông báo","Đăng xuất thành công!",parent = self.window)
 
     def calCreate(self):
+        if not CalendarFunc.checklogin():
+            messagebox.showinfo("Thông báo","Vui lòng đăng nhập",parent = self.window)
+            return
         if (self.list_):
             root = tk.Toplevel(self.window)
             GuiCreatCal(root)
@@ -136,6 +147,9 @@ class GoogleCalendar:
             messagebox.showerror(title="Lỗi",message="Không có thông tin lịch dạy vui lòng thêm lịch dạy",parent = self.window)
 
     def calRemove(self):
+        if not CalendarFunc.checklogin():
+            messagebox.showinfo("Thông báo","Vui lòng đăng nhập",parent = self.window)
+            return
         if self.solich > 0: 
             root = tk.Toplevel(self.window)
             GuiRemoveCalendar(root)
@@ -143,6 +157,9 @@ class GoogleCalendar:
             messagebox.showerror(title="Lỗi",message="Không có thông tin cán bộ giảng dạy vui lòng thêm tạo lịch trước",parent = self.window)
 
     def addEvent(self):
+        if not CalendarFunc.checklogin():
+            messagebox.showinfo("Thông báo","Vui lòng đăng nhập",parent = self.window)
+            return
         if self.solich > 0:
             root = tk.Toplevel(self.window)
             GuiAddEvent(root)
@@ -150,6 +167,9 @@ class GoogleCalendar:
             messagebox.showerror(title="Lỗi",message="Không có thông tin cán bộ giảng dạy vui lòng thêm tạo lịch trước",parent = self.window)
 
     def getShareableLink(self):
+        if not CalendarFunc.checklogin():
+            messagebox.showinfo("Thông báo","Vui lòng đăng nhập",parent = self.window)
+            return
         if self.solich > 0:
             root = tk.Toplevel(self.window)
             GuiShareCal(root)
