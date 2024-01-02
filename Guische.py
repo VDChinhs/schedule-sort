@@ -257,8 +257,16 @@ class Guische:
 
             unique_list = list(set(x))
 
+            # for i in unique_list:
+            #     data_percent.append(x.count(i))
+            #     labels.append(i)
+
             for i in unique_list:
-                data_percent.append(x.count(i))
+                point = 0
+                for j in self.list_:
+                    if i == j._lec:
+                        point = point + int(j._credit)
+                data_percent.append(point)
                 labels.append(i)
 
             for i in range(0,len(labels)):
