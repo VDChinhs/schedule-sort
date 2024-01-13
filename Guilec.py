@@ -163,6 +163,10 @@ class Guigiangvien:
         alpha = self.name_entry.get()
         giangvien = self.status_combobox.get()
         monhoc = self.status_combobox1.get()
+        if alpha != '' and alpha.isnumeric():
+            if int(alpha) > 12:
+                messagebox.showerror(title = "Lỗi",message = "Vui lòng nhập Alpha <= 12",parent = self.window)
+                return
         if alpha.isnumeric() or alpha == '':
             workbook = openpyxl.load_workbook(self.path)
             sheet = workbook[selected_table]
